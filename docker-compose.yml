@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: cpespace
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: adminpassword
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    
+  minio:
+    image: minio/minio
+    command: server /data
+    environment:
+      MINIO_ACCESS_KEY: NvyrAOeXthfbguezGizGxIqLrQbv6ROC
+      MINIO_SECRET_KEY: LEXNjqN0OlW53cHFTsBZfc7q2NGjZiIs
+    ports:
+      - "9000:9000"
+    volumes:
+      - minio_data:/data
+
+volumes:
+  postgres_data:
+  minio_data:

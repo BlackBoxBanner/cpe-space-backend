@@ -1,0 +1,165 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserStatus {
+  GRADUATED
+  ENROLLED
+}
+
+enum Role {
+  ADMIN
+  STUDENT
+}
+
+enum Program {
+  REGULAR
+  INTERNATIONAL
+  HEALTH_DATA_SCIENCE
+  RESFENTIAL_COLLEGE
+}
+
+model User {
+  id        String     @id @default(uuid())
+  studentid String     @unique
+  name      String
+  email     String?    @unique
+  phone     String?    @unique
+  program   Program    @default(REGULAR)
+  password  String
+  image     String?
+  touched   Boolean    @default(false) // record if user has logged in for the first time
+  role      Role       @default(STUDENT)
+  student   UserStatus @default(ENROLLED)
+
+  Blog                      Blog[]
+  Chat                      Chat[]
+  ConversationsParticipants ConversationsParticipants[]
+  Message                   Message[]
+  Anouncement               Anouncement[]
+  Event                     Event[]
+  EventPost                 EventPost[]
+  EventParticipants         EventParticipants[]
+}
+
+model Blog {
+  id        String  @id @default(uuid())
+  authorId  String
+  title     String
+  content   String  @db.Text
+  published Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author User @relation(fields: [authorId], references: [id])
+}
+
+model Chat {
+  id        String  @id @default(uuid())
+  authorId  String
+  content   String  @db.Text
+  published Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author User @relation(fields: [authorId], references: [id])
+}
+
+model Conversations {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  ConversationsParticipants ConversationsParticipants[]
+  Message                   Message[]
+}
+
+model ConversationsParticipants {
+  id             String   @id @default(uuid())
+  conversationId String
+  participantId  String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  conversation Conversations @relation(fields: [conversationId], references: [id])
+  participant  User          @relation(fields: [participantId], references: [id])
+}
+
+model Message {
+  id             String  @id @default(uuid())
+  conversationId String
+  authorId       String
+  content        String  @db.Text
+  read           Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  conversation Conversations @relation(fields: [conversationId], references: [id])
+  author       User          @relation(fields: [authorId], references: [id])
+}
+
+model Anouncement {
+  id        String  @id @default(uuid())
+  authorId  String
+  title     String
+  content   String  @db.Text
+  published Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author User @relation(fields: [authorId], references: [id])
+}
+
+model EventPost {
+  id        String  @id @default(uuid())
+  authorId  String
+  title     String
+  content   String  @db.Text
+  published Boolean @default(false)
+  eventId   String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author User  @relation(fields: [authorId], references: [id])
+  event  Event @relation(fields: [eventId], references: [id])
+}
+
+model Event {
+  id        String   @id @default(uuid())
+  authorId  String
+  title     String
+  content   String   @db.Text
+  eventDate DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  EventPost         EventPost[]
+  EventParticipants EventParticipants[]
+
+  author User @relation(fields: [authorId], references: [id])
+}
+
+model EventParticipants {
+  id      String @id @default(uuid())
+  eventId String
+  userId  String
+
+  createdAt DateTime @default(now())
+
+  event Event @relation(fields: [eventId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
+}
