@@ -41,7 +41,6 @@ model User {
   student   UserStatus @default(ENROLLED)
 
   Blog                      Blog[]
-  Chat                      Chat[]
   ConversationsParticipants ConversationsParticipants[]
   Message                   Message[]
   Anouncement               Anouncement[]
@@ -54,18 +53,6 @@ model Blog {
   id        String  @id @default(uuid())
   authorId  String
   title     String
-  content   String  @db.Text
-  published Boolean @default(false)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  author User @relation(fields: [authorId], references: [id])
-}
-
-model Chat {
-  id        String  @id @default(uuid())
-  authorId  String
   content   String  @db.Text
   published Boolean @default(false)
 
