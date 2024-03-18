@@ -18,13 +18,17 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/node": "^20.11.19",
     "tsc-alias": "^1.8.8",
     "typescript": "^5.3.3"
   },
   "dependencies": {
     "@prisma/client": "5.9.1",
+    "@types/cookie-parser": "^1.4.7",
     "@types/express": "^4.17.21",
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.6",
     "dotenv": "^16.4.4",
     "express": "^4.18.2",
     "minio": "^7.1.3",
