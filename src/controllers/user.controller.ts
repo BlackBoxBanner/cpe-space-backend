@@ -1,7 +1,11 @@
-import { APIController } from "@/types/responseType"
-import { UserSchema, UserType } from "@/types/zodSchema"
 import { prisma } from "@/utils/prisma"
 import bcrypt from "bcrypt"
+
+import { APIController } from "@/types/responseType"
+import { UserSchema, UserType } from "@/types/zodSchema"
+import { getCookiesAsCollection } from "@/utils/cookies"
+
+
 
 type test = Omit<UserType, "password">
 export const userGetController: APIController<UserType> = async (req, res, _next) => {
@@ -15,16 +19,6 @@ export const userGetController: APIController<UserType> = async (req, res, _next
   return res.status(200).json({ data: parseBody.data })
 }
 
-const getCookiesAsCollection = function (rawCookie: string | undefined): Record<string, string> {
-  const cookies: Record<string, string> = {};
-  rawCookie && rawCookie.split(";").forEach(function (cookie: string) {
-    const parts: RegExpMatchArray | null = cookie.match(/(.*?)=(.*)$/);
-    if (parts && parts.length) {
-      cookies[parts[1].trim()] = (parts[2] || "").trim();
-    }
-  });
-  return cookies;
-};
 
 export const userChangePasswordController: APIController<Pick<UserType, "password"> | null> = async (req, res, _next) => {
   const cookie = getCookiesAsCollection(req.headers.cookie)
