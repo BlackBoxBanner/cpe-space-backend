@@ -2,6 +2,7 @@ import express from 'express';
 import 'dotenv/config'
 
 import mainRouter from '@/routes/main.route'
+import authRouter from '@/routes/auth.route'
 import { middleware } from '@/middleware/middleware';
 
 // Initialize Express 
@@ -16,6 +17,6 @@ app.use(express.raw())
 app.use(middleware)
 
 // Mouth route handlers
-app.use('/', mainRouter)
-
+// app.use('/', mainRouter)
+app.use('/api/auth', authRouter)
 export default app;
