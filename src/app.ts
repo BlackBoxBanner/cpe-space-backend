@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser"
 
 import mainRouter from '@/routes/main.route'
 import userRouter from '@/routes/user.route'
+import authRouter from '@/routes/auth.route'
 import { middleware } from '@/middleware/middleware';
 
 // Initialize Express 
@@ -21,5 +22,6 @@ app.use(middleware)
 // Mouth route handlers
 app.use('/', mainRouter)
 app.use('/api/user', userRouter)
+app.use('/api/auth', authRouter)
 
 export default app;
