@@ -17,7 +17,7 @@ app.use(express.raw())
 app.use(cookieParser())
 
 // Config Middleware for handling CORS
-app.use(middleware)
+// app.use(middleware)
 
 // Mouth route handlers
 app.use('/', mainRouter)
