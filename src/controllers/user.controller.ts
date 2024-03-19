@@ -3,7 +3,7 @@ import bcrypt from "bcrypt"
 
 import { APIController } from "@/types/responseType"
 import { UserSchema, UserType } from "@/types/zodSchema"
-import { getCookiesAsCollection } from "@/utils/cookies"
+import { getCookies } from "@/utils/cookies"
 
 
 
@@ -21,7 +21,7 @@ export const userGetController: APIController<UserType> = async (req, res, _next
 
 
 export const userChangePasswordController: APIController<Pick<UserType, "password"> | null> = async (req, res, _next) => {
-  const cookie = getCookiesAsCollection(req.headers.cookie)
+  const cookie = getCookies(req.headers.cookie)
   const userid = cookie["user-id"]
 
   const body = req.body
