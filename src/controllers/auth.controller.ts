@@ -1,7 +1,7 @@
 import { APIController } from "@/types/responseType"
 import { UserSchema, UserType } from "@/types/zodSchema"
 import { JWT_SECRET_ENV } from "@/utils/env"
-import { prisma } from "@/utils/prisma"
+import prisma from "@/utils/prisma"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 
@@ -23,7 +23,7 @@ export const loginController: APIController<Pick<UserType, "password" | "student
 
         const match = await bcrypt.compare(password, user.password)
 
-        if (!match) throw new Error("user or password doest not match")
+        if (!match) throw new Error("password doest not match")
 
         const token = jwt.sign(
             { email: user.email },
@@ -48,9 +48,8 @@ export const loginController: APIController<Pick<UserType, "password" | "student
         return res.status(200).json({ data: returnData })
 
     } catch (error) {
-        console.log(error)
         if (error instanceof Error) {
-            return res.status(404).json({ error: { customError: error.message } })
+            return res.status(400).json({ error: { customError: error.message } })
         }
         return res.status(200).json({ error: { customError: "Internal Error" } })
     }

@@ -1,4 +1,4 @@
-import { prisma } from "@/utils/prisma"
+import prisma from "@/utils/prisma"
 import bcrypt from "bcrypt"
 
 import { APIController } from "@/types/responseType"
@@ -45,5 +45,5 @@ export const userChangePasswordController: APIController<Pick<UserType, "passwor
     return res.status(400).json({ error: { customError: "Unable to change user password due to some problems. Please contact admin to continue the process." } })
   }
 
-  return res.status(200).json({ data: null })
+  return res.status(204).json({ data: null })
 }
