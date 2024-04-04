@@ -2,10 +2,10 @@
   "name": "cpe-space-backend",
   "version": "0.0.1",
   "description": "This is the backend for the CPE Space project",
-  "main": "dist/server.js",
+  "main": "dist/src/server.js",
   "scripts": {
     "dev": "nodemon",
-    "start": "node dist/server.js",
+    "start": "node dist/src/server.js",
     "build": "tsc && tsc-alias",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
