@@ -1,12 +1,22 @@
-import { APIController } from "@/types/responseType"
-import { UserSchema, UserType } from "@/types/zodSchema"
+import { APIController, PostBody } from "@/types/responseType";
+import { decrypt } from "@/utils/decryption";
 
-export const mainGetController: APIController<{ message: string }> = async (req, res, _next) => {
-  return res.status(200).json({ data: { message: "Server says HI!!" } })
-}
+export const mainGetController: APIController<any> = async (
+  req,
+  res,
+  _next,
+) => {
+  return res.status(200).json({
+    data: {
+      message: "Hello World",
+    },
+  });
+};
 
-export const mainPostController: APIController = async (req, res, _next) => {
-  const body = req.body
+export const mainPostController: APIController<unknown> = async (req, res, _next) => {
+  const body = req.body.data
 
-  return res.status(200).json({ data: { body } })
-}
+  const decrypted = decrypt(body);
+
+  return res.status(200).json({ data: decrypted });
+};

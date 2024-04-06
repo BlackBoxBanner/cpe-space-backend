@@ -2,7 +2,7 @@ import { ZodFormattedError } from "zod";
 import type { Request, Response, NextFunction } from "express";
 
 export type APIController<T = Record<string, any>> = (
-  req: Request,
+  req: Request<Record<string, any>, any, PostBody>,
   res: Response<ReturnResponse<T>>,
   next: NextFunction
 ) => Promise<Response<ReturnResponse<T>>>;
@@ -33,3 +33,7 @@ export type ErrorResponse<T> =
     zodError?: never;
     customError: string;
   };
+
+export type PostBody = {
+  data: string
+}
