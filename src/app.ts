@@ -3,7 +3,6 @@ import 'dotenv/config'
 import cookieParser from "cookie-parser"
 
 import mainRouter from '@/routes/main.route'
-import userRouter from '@/routes/user.route'
 import authRouter from '@/routes/auth.route'
 import configRouter from '@/routes/config.route'
 import { middleware } from '@/middleware/middleware';
@@ -30,7 +29,6 @@ app.use(middleware)
 
 // Mouth route handlers
 app.use('/', mainRouter)
-app.use('/api/user', userRouter)
 app.use('/api/auth', authRouter)
 app.use('/api/config', configRouter)
 
