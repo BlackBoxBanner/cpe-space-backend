@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser"
 import mainRouter from '@/routes/main.route'
 import authRouter from '@/routes/auth.route'
 import configRouter from '@/routes/config.route'
+import usersRouter from '@/routes/users.route'
 import { middleware } from '@/middleware/middleware';
 import { publicKeyPem, privateKeyPem } from '@/utils/decryption/generate';
 import cors from "cors"
@@ -31,5 +32,6 @@ app.use(middleware)
 app.use('/', mainRouter)
 app.use('/api/auth', authRouter)
 app.use('/api/config', configRouter)
+app.use('/api/users', usersRouter)
 
 export default app;
