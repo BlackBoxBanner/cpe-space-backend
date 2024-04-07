@@ -1,8 +1,8 @@
 import { ZodFormattedError } from "zod";
 import type { Request, Response, NextFunction } from "express";
 
-export type APIController<T = Record<string, any>> = (
-  req: Request<Record<string, any>, any, PostBody>,
+export type APIController<T = Record<string, any>, J = PostBody> = (
+  req: Request<Record<string, any>, any, J>,
   res: Response<ReturnResponse<T>>,
   next: NextFunction
 ) => Promise<Response<ReturnResponse<T>>>;
