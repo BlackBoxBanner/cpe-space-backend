@@ -3,10 +3,11 @@ import prisma from "@/utils/prisma";
 import { User } from "@prisma/client";
 
 type UserExcludePassword = Omit<User, "password">;
-export const usersGetController: APIController<
-    UserExcludePassword | null
-> = async (req, res, _next) => {
-
+export const usersGetController: APIController<UserExcludePassword> = async (
+    req,
+    res,
+    _next
+) => {
     const id = req.params.id;
 
     const userData = await prisma.user.findUnique({
@@ -26,7 +27,9 @@ export const usersGetController: APIController<
     });
 
     if (!userData) {
-        return res.status(404).json({ error: { customError: "User not found" } });
+        return res
+            .status(404)
+            .json({ error: { customError: "User not found" } });
     }
 
     return res.status(200).json({ data: userData });
