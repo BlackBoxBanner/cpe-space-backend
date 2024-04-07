@@ -48,7 +48,6 @@ export const loginController: APIController<string> = async (req, res, _next) =>
             sameSite: "none",
         });
 
-        const { password: newpassword, ...returnData } = user as UserType
         return res.status(200).json({ data: token })
 
     } catch (error) {
