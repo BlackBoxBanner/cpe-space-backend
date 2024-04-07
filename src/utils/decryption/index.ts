@@ -26,7 +26,6 @@ export const decrypt = <T = unknown>(rawData: string) => {
     return encryptedData;
   } catch (error) {
     if (error instanceof Error) {
-      console.error(error.message)
       throw new Error(`Failed to decrypt data -> ${error.message}`);
     }
     throw new Error("Failed to decrypt data -> Unknown error");
