@@ -25,8 +25,11 @@ export const decrypt = <T = unknown>(rawData: string) => {
     );
     return encryptedData;
   } catch (error) {
-    console.error(error);
-    throw new Error("Failed to decrypt data");
+    if (error instanceof Error) {
+      console.error(error.message)
+      throw new Error(`Failed to decrypt data -> ${error.message}`);
+    }
+    throw new Error("Failed to decrypt data -> Unknown error");
   }
 };
 
@@ -62,7 +65,7 @@ function decryptData<T>(encryptedData: string, aesKeyPair: AesKeyPair): T {
 
   try {
     return JSON.parse(decipher.output.toString()) as T;
-  } catch (error) {
+  } catch (_error) {
     return decipher.output.toString() as T;
   }
 }
