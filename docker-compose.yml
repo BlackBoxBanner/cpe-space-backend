@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   postgres:
@@ -12,18 +12,19 @@ services:
       POSTGRES_PASSWORD: adminpassword
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    
+
   minio:
     image: minio/minio
-    command: server /data
-    environment:
-      MINIO_ACCESS_KEY: NvyrAOeXthfbguezGizGxIqLrQbv6ROC
-      MINIO_SECRET_KEY: LEXNjqN0OlW53cHFTsBZfc7q2NGjZiIs
     ports:
       - "9000:9000"
+      - "9001:9001"
     volumes:
       - minio_data:/data
+    environment:
+      MINIO_ROOT_USER: NvyrAOeXthfbguezGizGxIqLrQbv6ROC
+      MINIO_ROOT_PASSWORD: LEXNjqN0OlW53cHFTsBZfc7q2NGjZiIs
+    command: server --console-address ":9001" /data
 
 volumes:
   postgres_data:
-  minio_data:
+  minio_data: {}

@@ -6,6 +6,7 @@ import mainRouter from '@/routes/main.route'
 import userRouter from '@/routes/user.route'
 import authRouter from '@/routes/auth.route'
 import configRouter from '@/routes/config.route'
+import imageRouter from '@/routes/image.route'
 import { middleware } from '@/middleware/middleware';
 import { publicKeyPem, privateKeyPem } from '@/utils/decryption/generate';
 import cors from "cors"
@@ -15,7 +16,7 @@ import cors from "cors"
 export const app = express()
 
 // Config Middleware for parsing JSON request bodies
-app.use(express.json())
+app.use(express.json({ limit: '50mb' }))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.raw())
 app.use(cookieParser())
@@ -33,5 +34,6 @@ app.use('/', mainRouter)
 app.use('/api/user', userRouter)
 app.use('/api/auth', authRouter)
 app.use('/api/config', configRouter)
+app.use('/api/image', imageRouter)
 
 export default app;

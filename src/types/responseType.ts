@@ -1,9 +1,9 @@
 import { ZodFormattedError } from "zod";
 import type { Request, Response, NextFunction } from "express";
 
-export type APIController<T = Record<string, any>> = (
-  req: Request<Record<string, any>, any, PostBody>,
-  res: Response<ReturnResponse<T>>,
+export type APIController<T = Record<string, any>, U = PostBody, J = string> = (
+  req: Request<Record<string, any>, any, U>,
+  res: Response<ReturnResponse<T, J>>,
   next: NextFunction
 ) => Promise<Response<ReturnResponse<T>>>;
 
@@ -14,24 +14,24 @@ export type APIMiddleware<T = never> = (
   next: NextFunction
 ) => Promise<Response<ReturnResponse<T>> | void>
 
-export type ReturnResponse<T> =
+export type ReturnResponse<T, J = string> =
   | {
     data: T;
     error?: never;
   }
   | {
     data?: never;
-    error: ErrorResponse<T>;
+    error: ErrorResponse<T, J>;
   };
 
-export type ErrorResponse<T> =
+export type ErrorResponse<T, J> =
   | {
     zodError: ZodFormattedError<T>;
     customError?: never;
   }
   | {
     zodError?: never;
-    customError: string;
+    customError: J;
   };
 
 export type PostBody = {
