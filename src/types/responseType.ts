@@ -7,7 +7,7 @@ export type APIController<T = Record<string, any>, U = PostBody, J = string> = (
   next: NextFunction
 ) => Promise<Response<ReturnResponse<T, J>>>;
 
-export type APIControllerImage<T = Record<string, any>, U = PostBody, J = string> = (
+export type APIControllerImage<U = PostBody> = (
   req: Request<Record<string, any>, any, U>,
   res: Response,
   next: NextFunction
