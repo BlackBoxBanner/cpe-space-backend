@@ -3,10 +3,10 @@ import 'dotenv/config'
 import cookieParser from "cookie-parser"
 
 import mainRouter from '@/routes/main.route'
-import userRouter from '@/routes/user.route'
 import authRouter from '@/routes/auth.route'
 import configRouter from '@/routes/config.route'
 import imageRouter from '@/routes/image.route'
+import usersRouter from '@/routes/users.route'
 import { middleware } from '@/middleware/middleware';
 import { publicKeyPem, privateKeyPem } from '@/utils/decryption/generate';
 import cors from "cors"
