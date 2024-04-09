@@ -5,7 +5,6 @@ import cookieParser from "cookie-parser"
 import mainRouter from '@/routes/main.route'
 import authRouter from '@/routes/auth.route'
 import configRouter from '@/routes/config.route'
-import imageRouter from '@/routes/image.route'
 import usersRouter from '@/routes/users.route'
 import { middleware } from '@/middleware/middleware';
 import { publicKeyPem, privateKeyPem } from '@/utils/decryption/generate';
@@ -32,9 +31,8 @@ app.set("privateKeyPem", privateKeyPem)
 
 // Mouth route handlers
 app.use('/', mainRouter)
-app.use('/api/user', middleware, userRouter)
+app.use('/api/user', middleware, usersRouter)
 app.use('/api/auth', middleware, authRouter)
 app.use('/api/config', middleware, configRouter)
-app.use('/api/image', imageRouter)
 
 export default app;

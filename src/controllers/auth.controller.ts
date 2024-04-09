@@ -107,6 +107,7 @@ export const registerController: APIController<string> = async (req, res, _next)
         }
         return res.status(200).json({ error: { customError: "Internal Error" } })
     }
+}
 
 export const changePasswordController: APIController<string> = async (req, res, _next) => {
     try {
