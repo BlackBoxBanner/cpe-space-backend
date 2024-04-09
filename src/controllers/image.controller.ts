@@ -1,40 +1,53 @@
-import { APIController } from "@/types/responseType";
+import { APIController, APIControllerImage } from "@/types/responseType";
 import { useMinio } from "@/utils/minio";
 
 type UploadBody = {
-  name: string,
-  base64: string
-}
+  name: string;
+  base64: string;
+};
 
-
-export const uploadController: APIController<string, UploadBody> = async (req, res, _next) => {
+export const uploadController: APIController<string, UploadBody> = async (
+  req,
+  res,
+  _next,
+) => {
   try {
-    const { base64, name } = req.body
+    const { base64, name } = req.body;
 
-    const minio = useMinio()
+    const nameSplit = name.split("/");
 
-    !(await minio.bucketExists("user-images")) && await minio.makeBucket("user-images")
+    const minio = useMinio();
 
-    const imageBuffer = Buffer.from(base64.replace(/^data:image\/\w+;base64,/, ""), 'base64')
+    !(await minio.bucketExists(nameSplit[0])) &&
+      (await minio.makeBucket(nameSplit[0]));
 
-    await minio.putObject("user-images", name, imageBuffer)
+    const imageBuffer = Buffer.from(
+      base64.replace(/^data:image\/\w+;base64,/, ""),
+      "base64",
+    );
 
-    return res.status(200).json({ data: name })
+    await minio.putObject(nameSplit[0], nameSplit[1], imageBuffer);
+
+    return res.status(200).json({ data: name });
   } catch (error) {
     if (error instanceof Error) {
-      return res.status(403).json({ error: { customError: error.message } })
+      return res.status(403).json({ error: { customError: error.message } });
     }
-    return res.status(200).json({ error: { customError: "Internal Error" } })
+    return res.status(200).json({ error: { customError: "Internal Error" } });
   }
-}
+};
 
-const getController: APIController<string, string> = async (req, res, _next) => {
+export const getController: APIControllerImage = async (req, res, _next) => {
   try {
-    return res.status(200).json({ data: "upload" })
+    const { name, path } = req.params as { name: string; path: string };
+    const minio = useMinio();
+    const stream = await minio.getObject(path, name)
+    return stream.pipe(res);
   } catch (error) {
     if (error instanceof Error) {
-      return res.status(403).json({ error: { customError: error.message } })
+      return res.status(403).json({ error: { customError: error.message } });
     }
-    return res.status(200).json({ error: { customError: "Internal Error" } })
+    return res.status(200).json({ error: { customError: "Internal Error" } });
   }
-}
+};
+

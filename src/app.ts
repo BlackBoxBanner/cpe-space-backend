@@ -16,24 +16,25 @@ import cors from "cors"
 export const app = express()
 
 // Config Middleware for parsing JSON request bodies
-app.use(express.json({ limit: '50mb' }))
+app.use(express.json({ limit: '50mb', type: ["image/*", "application/*"] }))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.raw())
 app.use(cookieParser())
 app.use(cors())
+app.set("trust proxy", 1);
 
 // Set app variables
 app.set("publicKeyPem", publicKeyPem)
 app.set("privateKeyPem", privateKeyPem)
 
 // Config Middleware for handling CORS
-app.use(middleware)
+// app.use(middleware)
 
 // Mouth route handlers
 app.use('/', mainRouter)
-app.use('/api/user', userRouter)
-app.use('/api/auth', authRouter)
-app.use('/api/config', configRouter)
+app.use('/api/user', middleware, userRouter)
+app.use('/api/auth', middleware, authRouter)
+app.use('/api/config', middleware, configRouter)
 app.use('/api/image', imageRouter)
 
 export default app;

@@ -5,8 +5,13 @@ export type APIController<T = Record<string, any>, U = PostBody, J = string> = (
   req: Request<Record<string, any>, any, U>,
   res: Response<ReturnResponse<T, J>>,
   next: NextFunction
-) => Promise<Response<ReturnResponse<T>>>;
+) => Promise<Response<ReturnResponse<T, J>>>;
 
+export type APIControllerImage<T = Record<string, any>, U = PostBody, J = string> = (
+  req: Request<Record<string, any>, any, U>,
+  res: Response,
+  next: NextFunction
+) => Promise<Response>;
 
 export type APIMiddleware<T = never> = (
   req: Request,
