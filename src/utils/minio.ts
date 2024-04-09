@@ -1,10 +1,13 @@
-import Minio from "minio";
-import { MINIO_ACCESS_KEY_ENV, MINIO_ENDPOINT_ENV, MINIO_SECRET_KEY_ENV, } from "@/utils/env";
+import { Client } from "minio";
+import { MINIO_ACCESS_KEY_ENV, MINIO_ENDPOINT_ENV, MINIO_PORT_ENV, MINIO_SECRET_KEY_ENV, } from "@/utils/env";
 
-export const minio = new Minio.Client({
-  endPoint: MINIO_ENDPOINT_ENV || 'localhost:9000',
-  port: 9000,
-  useSSL: true,
-  accessKey: MINIO_ACCESS_KEY_ENV || "NvyrAOeXthfbguezGizGxIqLrQbv6ROC",
-  secretKey: MINIO_SECRET_KEY_ENV || "LEXNjqN0OlW53cHFTsBZfc7q2NGjZiIs",
-})
+const useMinio = () => {
+  return new Client({
+    endPoint: MINIO_ENDPOINT_ENV,
+    port: Number.parseInt(MINIO_PORT_ENV),
+    useSSL: false,
+    accessKey: MINIO_ACCESS_KEY_ENV,
+    secretKey: MINIO_SECRET_KEY_ENV,
+  })
+}
+export { useMinio }
