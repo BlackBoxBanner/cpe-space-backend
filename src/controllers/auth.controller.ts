@@ -1,7 +1,7 @@
 import { APIController } from "@/types/responseType"
-import { UserFormSchema, UserFormType, UserSchema } from "@/types/zodSchema"
 import { cookieOptions } from "@/utils/cookies"
 import { customError } from "@/utils/customError"
+import { UserFormSchema, UserFormType, UserSchema, UserType } from "@/types/zodSchema"
 import { decrypt } from "@/utils/decryption"
 import { JWT_SECRET_ENV } from "@/utils/env"
 import prisma from "@/utils/prisma"

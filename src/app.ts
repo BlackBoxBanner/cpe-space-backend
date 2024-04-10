@@ -7,6 +7,7 @@ import authRouter from '@/routes/auth.route'
 import configRouter from '@/routes/config.route'
 import imageRouter from '@/routes/image.route'
 import usersRouter from '@/routes/users.route'
+import announcementRouter from '@/routes/announcement.route'
 import { middleware } from '@/middleware/middleware';
 import { publicKeyPem, privateKeyPem } from '@/utils/decryption/generate';
 import cors from "cors"
@@ -43,5 +44,7 @@ app.use('/api/user', middleware, usersRouter)
 app.use('/api/auth', middleware, authRouter)
 app.use('/api/config', middleware, configRouter)
 app.use('/api/image', imageRouter)
+app.use('/api/announcement', announcementRouter)
+
 
 export default app;
