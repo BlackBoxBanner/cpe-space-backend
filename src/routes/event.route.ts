@@ -1,3 +1,4 @@
+import { deleteEvent } from "@/controllers/event/event.controller";
 import { Router } from "express";
 
 const routers = Router();
@@ -15,7 +16,7 @@ routers.post("/", () => { });
 routers.patch("/:id", () => { });
 
 // delete event
-routers.delete("/:id", () => { });
+routers.delete("/:id", deleteEvent);
 
 // get all posts
 routers.get("/post", () => { });
