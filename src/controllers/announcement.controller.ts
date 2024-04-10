@@ -1,18 +1,58 @@
 import { APIController, PostBody } from "@/types/responseType";
 import { AnouncementFormSchema } from "@/types/zodSchema";
 import prisma from "@/utils/prisma";
+import { Anouncement } from "@prisma/client";
 
-export const announcementGetController: APIController<any> = async (
+export const announcementGetController: APIController<Anouncement[]> = async (
     req,
     res,
     _next
 ) => {
+    try {
+        const announcement = await prisma.anouncement.findMany();
 
-    return res.status(200).json({
-        data: {
-            message: "Hello World",
-        },
-    });
+        if(announcement == null) return res.status(204).json({ error: { customError: "No announcement found" } });
+
+        return res.status(200).json({ data: announcement });
+
+    } catch (error) {
+        if (error instanceof Error) {
+            return res
+                .status(403)
+                .json({ error: { customError: error.message } });
+        }
+        
+        return res
+            .status(200)
+            .json({ error: { customError: "Internal Error" } });
+    }
+};
+
+
+export const announcementGetbyIdController: APIController<Anouncement> = async (
+    req,
+    res,
+    _next
+) => {
+    try {
+        const id: string = req.params.id;
+        const announcement = await prisma.anouncement.findUnique({where: {id}});
+
+        if(announcement == null) return res.status(204).json({ error: { customError: "No announcement found" } });
+
+        return res.status(200).json({ data: announcement });
+
+    } catch (error) {
+        if (error instanceof Error) {
+            return res
+                .status(403)
+                .json({ error: { customError: error.message } });
+        }
+        
+        return res
+            .status(200)
+            .json({ error: { customError: "Internal Error" } });
+    }
 };
 
 export const announcementPostController: APIController<any> = async (
