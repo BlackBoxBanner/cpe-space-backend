@@ -74,7 +74,7 @@ export const announcementPostController: APIController<any> = async (
 
         if (!validateAnnouncement.success)
             return res.status(403).json({
-                data: { zodError: validateAnnouncement.error.format() },
+                error: { zodError: validateAnnouncement.error.format() },
             });
 
         const anouncement = await prisma.anouncement.create({
@@ -110,6 +110,31 @@ export const announcementDeleteController: APIController<Anouncement> = async (
                 .json({ error: { customError: "No announcement delete" } });
 
         return res.status(200).json({ data: announcement });
+    } catch (error) {
+        return res.status(400).json(customError(error));
+    }
+};
+
+export const announcementPatchController: APIController<Anouncement> = async (
+    req,
+    res,
+    _next
+) => {
+    const body = req.body.data;
+    const id: string = req.params.id;
+    try {
+        const validateAnnouncement = AnouncementFormSchema.safeParse(body);
+
+        if (!validateAnnouncement.success)
+            return res.status(403).json({
+                error: { zodError: validateAnnouncement.error.format() },
+            });
+        const anouncement = await prisma.anouncement.update({
+            where: { id },
+            data: { ...validateAnnouncement.data },
+        });
+
+        return res.status(200).json({ data: anouncement });
     } catch (error) {
         return res.status(400).json(customError(error));
     }
