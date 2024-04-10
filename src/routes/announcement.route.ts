@@ -1,9 +1,14 @@
-import { announcementGetController, announcementPostController } from '@/controllers/announcement.controller'
-import { Router } from 'express'
+import {
+    announcementGetController,
+    announcementGetbyIdController,
+    announcementPostController,
+} from "@/controllers/announcement.controller";
+import { Router } from "express";
 
-const routers = Router()
+const routers = Router();
 
-routers.get('/', announcementGetController)
-routers.post('/', announcementPostController)
+routers.get("/", announcementGetController);
+routers.get("/:id", announcementGetbyIdController);
+routers.post("/", announcementPostController);
 
-export default routers
+export default routers;
