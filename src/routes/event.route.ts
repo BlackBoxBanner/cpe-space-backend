@@ -1,4 +1,4 @@
-import { getManyEventController } from "@/controllers/event/event.controller";
+import { getEventController, getManyEventController } from "@/controllers/event/event.controller";
 import { Router } from "express";
 
 const routers = Router();
@@ -7,7 +7,7 @@ const routers = Router();
 routers.get("/", getManyEventController);
 
 // get event
-routers.get("/:id", () => { });
+routers.get("/:id", getEventController);
 
 // create event
 routers.post("/", () => { });
