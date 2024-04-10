@@ -1,6 +1,7 @@
 import { APIController } from "@/types/responseType"
-import { UserFormSchema, UserFormType, UserSchema, UserType } from "@/types/zodSchema"
+import { UserFormSchema, UserFormType, UserSchema } from "@/types/zodSchema"
 import { cookieOptions } from "@/utils/cookies"
+import { customError } from "@/utils/customError"
 import { decrypt } from "@/utils/decryption"
 import { JWT_SECRET_ENV } from "@/utils/env"
 import prisma from "@/utils/prisma"
@@ -46,25 +47,19 @@ export const loginController: APIController<string> = async (req, res, _next) =>
         return res.status(200).json({ data: token })
 
     } catch (error) {
-        if (error instanceof Error) {
-            return res.status(403).json({ error: { customError: error.message } })
-        }
-        return res.status(200).json({ error: { customError: "Internal Error" } })
+        return res.status(200).json(customError(error))
     }
 
 }
 
-export const signoutController: APIController<string> = async (req, res, _next) => {
+export const signoutController: APIController<string> = async (_req, res, _next) => {
     try {
         res.clearCookie("cpe_space_session")
         res.clearCookie("user-id")
 
         return res.status(200).json({ data: "signout success" })
     } catch (error) {
-        if (error instanceof Error) {
-            return res.status(403).json({ error: { customError: error.message } })
-        }
-        return res.status(200).json({ error: { customError: "Internal Error" } })
+        return res.status(200).json(customError(error))
     }
 
 }
@@ -93,13 +88,9 @@ export const registerController: APIController<string> = async (req, res, _next)
             }
         })
 
-
         return res.status(200).json({ data: "register success" })
     } catch (error) {
-        if (error instanceof Error) {
-            return res.status(403).json({ error: { customError: error.message } })
-        }
-        return res.status(200).json({ error: { customError: "Internal Error" } })
+        return res.status(200).json(customError(error))
     }
 }
 export const changePasswordController: APIController<string> = async (req, res, _next) => {
@@ -126,9 +117,6 @@ export const changePasswordController: APIController<string> = async (req, res, 
         return res.status(200).json({ data: "Successfully change user password." })
 
     } catch (error) {
-        if (error instanceof Error) {
-            return res.status(400).json({ error: { customError: error.message } })
-        }
-        return res.status(400).json({ error: { customError: "Internal Error" } })
+        return res.status(200).json(customError(error))
     }
 }

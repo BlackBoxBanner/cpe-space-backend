@@ -1,4 +1,5 @@
 import { APIController, APIControllerImage } from "@/types/responseType";
+import { customError } from "@/utils/customError";
 import { useMinio } from "@/utils/minio";
 import { BucketItem } from "minio";
 
@@ -27,10 +28,7 @@ export const uploadController: APIController<string, UploadBody> = async (req, r
 
     return res.status(200).json({ data: name });
   } catch (error) {
-    if (error instanceof Error) {
-      return res.status(403).json({ error: { customError: error.message } });
-    }
-    return res.status(200).json({ error: { customError: "Internal Error" } });
+    return res.status(200).json(customError(error))
   }
 };
 
@@ -41,10 +39,7 @@ export const getController: APIControllerImage = async (req, res, _next) => {
     const stream = await minio.getObject(path, name)
     return stream.pipe(res);
   } catch (error) {
-    if (error instanceof Error) {
-      return res.status(403).json({ error: { customError: error.message } });
-    }
-    return res.status(200).json({ error: { customError: "Internal Error" } });
+    return res.status(200).json(customError(error))
   }
 };
 
@@ -54,10 +49,7 @@ export const getPathController: APIController<string[]> = async (req, res, _next
     const list = await minio.listBuckets();
     return res.status(200).json({ data: list.reduce((acc, cur) => acc.concat(cur.name), [] as string[]) });
   } catch (error) {
-    if (error instanceof Error) {
-      return res.status(403).json({ error: { customError: error.message } });
-    }
-    return res.status(200).json({ error: { customError: "Internal Error" } });
+    return res.status(200).json(customError(error))
   }
 }
 
@@ -79,9 +71,6 @@ export const getImagePathController: APIController<string[]> = async (req, res, 
 
     return res.status(200)
   } catch (error) {
-    if (error instanceof Error) {
-      return res.status(403).json({ error: { customError: error.message } });
-    }
-    return res.status(200).json({ error: { customError: "Internal Error" } });
+    return res.status(200).json(customError(error))
   }
 }
