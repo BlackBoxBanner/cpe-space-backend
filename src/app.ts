@@ -10,6 +10,7 @@ import usersRouter from '@/routes/users.route'
 import { middleware } from '@/middleware/middleware';
 import { publicKeyPem, privateKeyPem } from '@/utils/decryption/generate';
 import cors from "cors"
+import { CLIENT_DOMAIN } from '@/utils/env';
 
 
 // Initialize Express 
@@ -20,7 +21,13 @@ app.use(express.json({ limit: '50mb', type: ["image/*", "application/*"] }))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.raw())
 app.use(cookieParser())
-app.use(cors())
+app.use(
+  cors({
+    origin: CLIENT_DOMAIN,
+    credentials: true,
+  })
+);
+
 app.set("trust proxy", 1);
 
 // Set app variables
