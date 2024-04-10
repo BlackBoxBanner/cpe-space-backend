@@ -8,3 +8,4 @@ export const MINIO_SECRET_KEY_ENV = envVariable("MINIO_SECRET_KEY");
 export const MINIO_ACCESS_KEY_ENV = envVariable("MINIO_ACCESS_KEY");
 export const API_TOKEN_ENV = envVariable("API_TOKEN");
 export const JWT_SECRET_ENV = envVariable("JWT_SECRET")
+export const CLIENT_DOMAIN = envVariable("CLIENT_DOMAIN")

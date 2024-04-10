@@ -1,3 +1,5 @@
+import { CookieOptions } from "express";
+
 /**
  * Parses the provided raw cookie string and returns a dictionary of cookie key-value pairs.
  * @param {string | undefined} rawCookie - The raw cookie string to be parsed.
@@ -18,3 +20,22 @@ export function getCookies(rawCookie: string | undefined): Record<string, string
   });
   return cookies;
 };
+
+export const developmentOptions: CookieOptions = {
+  httpOnly: true,
+  path: "/",
+  domain: "localhost",
+  secure: false,
+  sameSite: "lax",
+  maxAge: 3600000,
+}
+
+export const productionOptions: CookieOptions = {
+  httpOnly: true,
+  path: "/",
+  secure: true,
+  sameSite: "none",
+  maxAge: 43200000,
+}
+
+export const cookieOptions: CookieOptions = process.env.NODE_ENV === "production" ? productionOptions : developmentOptions;
