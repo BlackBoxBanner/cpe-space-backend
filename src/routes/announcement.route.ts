@@ -1,4 +1,5 @@
 import {
+    announcementDeleteController,
     announcementGetController,
     announcementGetbyIdController,
     announcementPostController,
@@ -10,5 +11,5 @@ const routers = Router();
 routers.get("/", announcementGetController);
 routers.get("/:id", announcementGetbyIdController);
 routers.post("/", announcementPostController);
-
+routers.delete("/:id", announcementDeleteController);
 export default routers;
