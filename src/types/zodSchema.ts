@@ -89,7 +89,7 @@ export const AnouncementSchema = zod.object({
   updatedAt: zod.string({ invalid_type_error: invalid_type_error("Updated At", "string"), required_error }).min(1, invalid_value_length_error("Updated At", 1)),
 })
 
-export const AnouncementFormSchema = AnouncementSchema.omit({ id: true, createdAt: true, updatedAt: true })
+export const AnouncementFormSchema = AnouncementSchema.omit({ id: true, authorId: true, createdAt: true, updatedAt: true })
 
 export type AnouncementType = zod.infer<typeof AnouncementSchema>
 
