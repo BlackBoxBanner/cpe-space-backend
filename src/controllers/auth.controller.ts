@@ -1,5 +1,6 @@
 import { APIController } from "@/types/responseType"
 import { UserFormSchema, UserFormType, UserSchema, UserType } from "@/types/zodSchema"
+import { cookieOptions } from "@/utils/cookies"
 import { decrypt } from "@/utils/decryption"
 import { JWT_SECRET_ENV } from "@/utils/env"
 import prisma from "@/utils/prisma"
@@ -9,6 +10,9 @@ import { v4 as uuidv4 } from 'uuid';
 
 export const loginController: APIController<string> = async (req, res, _next) => {
     try {
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'POST');
+
         const body = decrypt(req.body.data)
 
         const validateLogin = UserSchema.pick({ studentid: true, password: true }).safeParse(body)
@@ -35,19 +39,9 @@ export const loginController: APIController<string> = async (req, res, _next) =>
             { expiresIn: "1d" }
         );
 
-        res.cookie("cpe_space_session", token, {
-            maxAge: 300000,
-            secure: true,
-            httpOnly: true,
-            sameSite: "none",
-        });
+        res.cookie("cpe_space_session", token, cookieOptions);
 
-        res.cookie("user-id", user.id, {
-            maxAge: 300000,
-            secure: true,
-            httpOnly: true,
-            sameSite: "none",
-        });
+        res.cookie("user-id", user.id, cookieOptions);
 
         return res.status(200).json({ data: token })
 
