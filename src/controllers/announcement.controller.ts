@@ -1,9 +1,6 @@
 import { APIController, PostBody } from "@/types/responseType";
 import { AnouncementFormSchema } from "@/types/zodSchema";
 import prisma from "@/utils/prisma";
-import { Anouncement } from "@prisma/client";
-import bcrypt from "bcrypt";
-import { SafeParseReturnType } from "zod/lib";
 
 export const announcementGetController: APIController<any> = async (
     req,
