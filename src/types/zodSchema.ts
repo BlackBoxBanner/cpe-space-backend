@@ -117,16 +117,12 @@ export const EventSchema = zod.object({
   authorId: zod.string({ invalid_type_error: invalid_type_error("Author ID", "string"), required_error }).min(1, invalid_value_length_error("Author ID", 1)),
   title: zod.string({ invalid_type_error: invalid_type_error("Title", "string"), required_error }).min(1, invalid_value_length_error("Title", 1)),
   content: zod.string({ invalid_type_error: invalid_type_error("Content", "string"), required_error }).min(1, invalid_value_length_error("Content", 1)),
-  eventDate: zod.string({ invalid_type_error: invalid_type_error("Event Date", "string"), required_error }).min(1, invalid_value_length_error("Event Date", 1)),
-  createdAt: zod.string({ invalid_type_error: invalid_type_error("Created At", "string"), required_error }).min(1, invalid_value_length_error("Created At", 1)),
-  updatedAt: zod.string({ invalid_type_error: invalid_type_error("Updated At", "string"), required_error }).min(1, invalid_value_length_error("Updated At", 1)),
+  eventDate: zod.date({ invalid_type_error: invalid_type_error("Event Date", "date"), required_error }),
+  createdAt: zod.date({ invalid_type_error: invalid_type_error("Created At", "date"), required_error }),
+  updatedAt: zod.date({ invalid_type_error: invalid_type_error("Updated At", "date"), required_error }),
 })
 
-export const EventFormSchema = EventSchema.omit({ id: true, createdAt: true, updatedAt: true })
-
 export type EventType = zod.infer<typeof EventSchema>
-
-export type EventFormType = zod.infer<typeof EventFormSchema>
 
 export const EventParticipantsSchema = zod.object({
   id: zod.string({ invalid_type_error: invalid_type_error("ID", "string"), required_error }).min(1, invalid_value_length_error("ID", 1)),

@@ -1,3 +1,4 @@
+import { patchEvent } from "@/controllers/event/event.controller";
 import { getEventController, getManyEventController } from "@/controllers/event/event.controller";
 import { Router } from "express";
 
@@ -13,7 +14,7 @@ routers.get("/:id", getEventController);
 routers.post("/", () => { });
 
 // update event
-routers.patch("/:id", () => { });
+routers.patch("/:id", patchEvent);
 
 // delete event
 routers.delete("/:id", () => { });
