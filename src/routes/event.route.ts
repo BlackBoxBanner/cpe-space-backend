@@ -1,3 +1,4 @@
+import { postEventPost } from "@/controllers/event/event.controller";
 import { Router } from "express";
 
 const routers = Router();
@@ -24,7 +25,7 @@ routers.get("/post", () => { });
 routers.get("/post/:id", () => { });
 
 // create post
-routers.post("/post", () => { });
+routers.post("/post", postEventPost);
 
 // update post
 routers.patch("/post/:id", () => { });
