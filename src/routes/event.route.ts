@@ -1,3 +1,4 @@
+import { leaveEvent } from "@/controllers/event/eventAttendee.controller";
 import { Router } from "express";
 
 const routers = Router();
@@ -39,6 +40,6 @@ routers.get("/attendees", () => { });
 routers.post("/join/:id", () => { });
 
 // leave event
-routers.post("/leave/:id", () => { });
+routers.post("/leave/:id", leaveEvent);
 
 export default routers;
