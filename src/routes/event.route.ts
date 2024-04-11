@@ -1,3 +1,4 @@
+import { getEventParticipants } from "@/controllers/event/eventAttendee.controller";
 import { Router } from "express";
 
 const routers = Router();
@@ -33,7 +34,7 @@ routers.patch("/post/:id", () => { });
 routers.delete("/post/:id", () => { });
 
 // get all attendees
-routers.get("/attendees", () => { });
+routers.get("/attendees/:id", getEventParticipants);
 
 // join event
 routers.post("/join/:id", () => { });
