@@ -1,13 +1,14 @@
 import { patchEvent } from "@/controllers/event/event.controller";
+import { getEventController, getManyEventController } from "@/controllers/event/event.controller";
 import { Router } from "express";
 
 const routers = Router();
 
 // get all events
-routers.get("/", () => { });
+routers.get("/", getManyEventController);
 
 // get event
-routers.get("/:id", () => { });
+routers.get("/:id", getEventController);
 
 // create event
 routers.post("/", () => { });
