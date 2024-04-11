@@ -13,6 +13,7 @@ import { middleware } from '@/middleware/middleware';
 import { publicKeyPem, privateKeyPem } from '@/utils/decryption/generate';
 import cors from "cors"
 import { CLIENT_DOMAIN } from '@/utils/env';
+import { authMiddleware } from '@/middleware/auth.middleware';
 
 
 // Initialize Express 
@@ -41,12 +42,11 @@ app.set("privateKeyPem", privateKeyPem)
 
 // Mouth route handlers
 app.use('/', mainRouter)
-app.use('/api/user', middleware, usersRouter)
+app.use('/api/user', middleware, authMiddleware, usersRouter)
 app.use('/api/auth', middleware, authRouter)
 app.use('/api/config', middleware, configRouter)
+app.use('/api/announcement', middleware, authMiddleware, announcementRouter)
+app.use('/api/event', middleware, authMiddleware, eventRouter)
 app.use('/api/image', imageRouter)
-app.use('/api/announcement', announcementRouter)
-app.use('/api/event', middleware, eventRouter)
-
 
 export default app;
