@@ -1,3 +1,4 @@
+import { joinEvent } from "@/controllers/event/eventAttendee.controller";
 import { Router } from "express";
 
 const routers = Router();
@@ -33,10 +34,10 @@ routers.patch("/post/:id", () => { });
 routers.delete("/post/:id", () => { });
 
 // get all attendees
-routers.get("/attendees", () => { });
+routers.get("/attendees/:id", () => { });
 
 // join event
-routers.post("/join/:id", () => { });
+routers.post("/join/:id", joinEvent);
 
 // leave event
 routers.post("/leave/:id", () => { });
