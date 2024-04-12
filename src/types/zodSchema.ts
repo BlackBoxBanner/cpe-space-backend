@@ -102,15 +102,11 @@ export const EventPostSchema = zod.object({
   content: zod.string({ invalid_type_error: invalid_type_error("Content", "string"), required_error }).min(1, invalid_value_length_error("Content", 1)),
   published: zod.boolean({ invalid_type_error: invalid_type_error("Published", "boolean"), required_error }),
   eventId: zod.string({ invalid_type_error: invalid_type_error("Event ID", "string"), required_error }).min(1, invalid_value_length_error("Event ID", 1)),
-  createdAt: zod.string({ invalid_type_error: invalid_type_error("Created At", "string"), required_error }).min(1, invalid_value_length_error("Created At", 1)),
-  updatedAt: zod.string({ invalid_type_error: invalid_type_error("Updated At", "string"), required_error }).min(1, invalid_value_length_error("Updated At", 1)),
+  createdAt: zod.date({ invalid_type_error: invalid_type_error("Created At", "string"), required_error }),
+  updatedAt: zod.date({ invalid_type_error: invalid_type_error("Updated At", "string"), required_error }),
 })
 
-export const EventPostFormSchema = EventPostSchema.omit({ id: true, createdAt: true, updatedAt: true })
-
 export type EventPostType = zod.infer<typeof EventPostSchema>
-
-export type EventPostFormType = zod.infer<typeof EventPostFormSchema>
 
 export const EventSchema = zod.object({
   id: zod.string({ invalid_type_error: invalid_type_error("ID", "string"), required_error }).min(1, invalid_value_length_error("ID", 1)),
@@ -128,11 +124,7 @@ export const EventParticipantsSchema = zod.object({
   id: zod.string({ invalid_type_error: invalid_type_error("ID", "string"), required_error }).min(1, invalid_value_length_error("ID", 1)),
   eventId: zod.string({ invalid_type_error: invalid_type_error("Event ID", "string"), required_error }).min(1, invalid_value_length_error("Event ID", 1)),
   userId: zod.string({ invalid_type_error: invalid_type_error("User ID", "string"), required_error }).min(1, invalid_value_length_error("User ID", 1)),
-  createdAt: zod.string({ invalid_type_error: invalid_type_error("Created At", "string"), required_error }).min(1, invalid_value_length_error("Created At", 1)),
+  createdAt: zod.date({ invalid_type_error: invalid_type_error("Created At", "string"), required_error }),
 })
 
 export type EventParticipantsType = zod.infer<typeof EventParticipantsSchema>
-
-export const EventParticipantsFormSchema = EventParticipantsSchema.omit({ id: true, createdAt: true })
-
-export type EventParticipantsFormType = zod.infer<typeof EventParticipantsFormSchema>
