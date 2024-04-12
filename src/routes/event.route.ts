@@ -1,5 +1,6 @@
 import { patchEvent } from "@/controllers/event/event.controller";
 import { getEventController, getManyEventController, deleteEvent } from "@/controllers/event/event.controller";
+import { getEventPosts, getManyEventPosts } from "@/controllers/event/eventPost.controller";
 import { Router } from "express";
 
 const routers = Router();
@@ -20,10 +21,10 @@ routers.patch("/:id", patchEvent);
 routers.delete("/:id", deleteEvent);
 
 // get all posts
-routers.get("/post", () => { });
+routers.get("/post", getManyEventPosts);
 
 // get post
-routers.get("/post/:id", () => { });
+routers.get("/post/:id", getEventPosts);
 
 // create post
 routers.post("/post", () => { });
