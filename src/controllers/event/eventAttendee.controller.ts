@@ -26,3 +26,34 @@ export const joinEvent: APIController<string> = async (req, res) => {
     return res.status(400).json(customError(error));
   }
 }
+
+export const leaveEvent: APIController<string> = async (req, res) => {
+  try {
+
+    const { id } = req.params;
+    const cookies = req.cookies;
+    const userid = cookies.userid;
+
+    if (!id) throw new Error("event id is required");
+    if (!userid) throw new Error("signin to join event");
+
+    const participent = await prisma.eventParticipants.findFirst({
+      where: {
+        eventId: id,
+        userId: userid
+      }
+    })
+
+    if (!participent) throw new Error("user is not a participent of this event");
+
+    await prisma.eventParticipants.delete({
+      where: {
+        id: participent.id
+      }
+    })
+
+    return res.status(200).json({ data: "Event participent left." });
+  } catch (error) {
+    return res.status(400).json(customError(error));
+  }
+}
