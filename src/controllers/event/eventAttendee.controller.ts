@@ -57,3 +57,22 @@ export const leaveEvent: APIController<string> = async (req, res) => {
     return res.status(400).json(customError(error));
   }
 }
+
+export const getEventParticipants: APIController<EventParticipantsType[]> = async (req, res) => {
+  try {
+
+    const { id } = req.params;
+
+    if (!id) throw new Error("event id is required");
+
+    const participents = await prisma.eventParticipants.findMany({
+      where: {
+        eventId: id
+      }
+    })
+
+    return res.status(200).json({ data: participents });
+  } catch (error) {
+    return res.status(400).json(customError(error));
+  }
+}
