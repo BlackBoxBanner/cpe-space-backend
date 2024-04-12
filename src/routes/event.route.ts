@@ -1,19 +1,20 @@
-import { deleteEvent } from "@/controllers/event/event.controller";
+import { patchEvent } from "@/controllers/event/event.controller";
+import { getEventController, getManyEventController, deleteEvent } from "@/controllers/event/event.controller";
 import { Router } from "express";
 
 const routers = Router();
 
 // get all events
-routers.get("/", () => { });
+routers.get("/", getManyEventController);
 
 // get event
-routers.get("/:id", () => { });
+routers.get("/:id", getEventController);
 
 // create event
 routers.post("/", () => { });
 
 // update event
-routers.patch("/:id", () => { });
+routers.patch("/:id", patchEvent);
 
 // delete event
 routers.delete("/:id", deleteEvent);
