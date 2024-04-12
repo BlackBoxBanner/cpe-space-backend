@@ -54,3 +54,20 @@ export const getEventController: APIController<Event> = async (req, res, _next) 
     return res.status(400).json(customError(error))
   }
 }
+
+export const deleteEvent: APIController = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id || id === "") throw new Error("Id is required");
+
+    const event = await prisma.event.delete({
+      where: {
+        id
+      },
+    });
+    return res.status(200).json({ data: event });
+  } catch (error: any) {
+    return res.status(400).json(customError(error));
+  }
+}
