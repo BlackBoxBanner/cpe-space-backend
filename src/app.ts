@@ -43,11 +43,11 @@ app.set("privateKeyPem", privateKeyPem)
 // Mouth route handlers
 app.use('/', mainRouter)
 app.use('/api/user', middleware, authMiddleware, usersRouter)
+app.use('/api/user', middleware, authMiddleware, usersRouter)
 app.use('/api/auth', middleware, authRouter)
 app.use('/api/config', middleware, configRouter)
 app.use('/api/announcement', middleware, authMiddleware, announcementRouter)
 app.use('/api/event', middleware, authMiddleware, eventRouter)
-app.use('/api/announcement', authMiddleware, announcementRouter)
 app.use('/api/image', imageRouter)
 
 export default app;

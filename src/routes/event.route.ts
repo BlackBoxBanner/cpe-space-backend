@@ -1,6 +1,7 @@
 import { patchEvent, postEventPost } from "@/controllers/event/event.controller";
 import { getEventController, getManyEventController, deleteEvent } from "@/controllers/event/event.controller";
 import { deletePostEvent, getEventPosts, getManyEventPosts, patchPostEvent } from "@/controllers/event/eventPost.controller";
+import { joinEvent } from "@/controllers/event/eventAttendee.controller";
 import { Router } from "express";
 
 const routers = Router();
@@ -36,10 +37,10 @@ routers.patch("/post/:id", patchPostEvent);
 routers.delete("/post/:id", deletePostEvent);
 
 // get all attendees
-routers.get("/attendees", () => { });
+routers.get("/attendees/:id", () => { });
 
 // join event
-routers.post("/join/:id", () => { });
+routers.post("/join/:id", joinEvent);
 
 // leave event
 routers.post("/leave/:id", () => { });
