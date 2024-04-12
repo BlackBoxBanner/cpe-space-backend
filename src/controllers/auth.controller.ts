@@ -47,7 +47,7 @@ export const loginController: APIController<string> = async (req, res, _next) =>
         return res.status(200).json({ data: token })
 
     } catch (error) {
-        return res.status(200).json(customError(error))
+        return res.status(400).json(customError(error))
     }
 
 }
