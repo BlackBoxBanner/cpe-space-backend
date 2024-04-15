@@ -3,11 +3,11 @@ import { cookieOptions } from "@/utils/cookies"
 import { customError } from "@/utils/customError"
 import { UserFormSchema, UserFormType, UserSchema, UserType } from "@/types/zodSchema"
 import { decrypt } from "@/utils/decryption"
-import { JWT_SECRET_ENV } from "@/utils/env"
 import prisma from "@/utils/prisma"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import { v4 as uuidv4 } from 'uuid';
+import { env } from "@/utils/env"
 
 export const loginController: APIController<string> = async (req, res, _next) => {
     try {
@@ -36,7 +36,7 @@ export const loginController: APIController<string> = async (req, res, _next) =>
 
         const token = jwt.sign(
             { email: user.email },
-            JWT_SECRET_ENV,
+            env.JWT_SECRET,
             { expiresIn: "1d" }
         );
 

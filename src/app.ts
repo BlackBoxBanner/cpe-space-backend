@@ -12,8 +12,8 @@ import eventRouter from '@/routes/event.route'
 import { middleware } from '@/middleware/middleware';
 import { publicKeyPem, privateKeyPem } from '@/utils/decryption/generate';
 import cors from "cors"
-import { CLIENT_DOMAIN } from '@/utils/env';
 import { authMiddleware } from '@/middleware/auth.middleware';
+import { env } from '@/utils/env';
 
 
 // Initialize Express 
@@ -26,7 +26,7 @@ app.use(express.raw())
 app.use(cookieParser())
 app.use(
   cors({
-    origin: CLIENT_DOMAIN,
+    origin: env.CLIENT_DOMAIN,
     credentials: true,
   })
 );

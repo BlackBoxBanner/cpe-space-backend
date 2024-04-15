@@ -1,8 +1,8 @@
 import app from "@/app"
-import { PORT_ENV } from "@/utils/env";
 import http from 'http';
+import { env } from "@/utils/env";
 
-export function createHttpServer(port = PORT_ENV) {
+export function createHttpServer(port = env.PORT) {
   const httpServer: http.Server = app.listen(port, () => console.log(`Sever is running on http://localhost:${port}/`))
 
   return httpServer;
