@@ -1,11 +1,25 @@
-import { envVariable } from "@dookdiks/utils";
+import zod from "zod"
 
-export const PORT_ENV = envVariable("PORT", "5100");
-export const DATABASE_URL_ENV = envVariable("DATABASE_URL");
-export const MINIO_ENDPOINT_ENV = envVariable("MINIO_ENDPOINT");
-export const MINIO_PORT_ENV = envVariable("MINIO_PORT");
-export const MINIO_SECRET_KEY_ENV = envVariable("MINIO_SECRET_KEY");
-export const MINIO_ACCESS_KEY_ENV = envVariable("MINIO_ACCESS_KEY");
-export const API_TOKEN_ENV = envVariable("API_TOKEN");
-export const JWT_SECRET_ENV = envVariable("JWT_SECRET")
-export const CLIENT_DOMAIN = envVariable("CLIENT_DOMAIN")
+const envSchema = zod.object({
+  PORT: zod.string({ required_error: "PORT is required" }),
+  DATABASE_URL: zod.string({ required_error: "DATABASE_URL is required" }),
+  MINIO_ENDPOINT: zod.string({ required_error: "MINIO_ENDPOINT is required" }),
+  MINIO_PORT: zod.string({ required_error: "MINIO_PORT is required" }),
+  MINIO_ACCESS_KEY: zod.string({ required_error: "MINIO_SECRET_KEY is required" }),
+  MINIO_SECRET_KEY: zod.string({ required_error: "MINIO_ACCESS_KEY is required" }),
+  API_TOKEN: zod.string({ required_error: "API_TOKEN is required" }),
+  JWT_SECRET: zod.string({ required_error: "JWT_SECRET is required" }),
+  CLIENT_DOMAIN: zod.string({ required_error: "CLIENT_DOMAIN is required" })
+})
+
+export const env = envSchema.parse({
+  PORT: process.env.PORT,
+  DATABASE_URL: process.env.DATABASE_URL,
+  MINIO_ENDPOINT: process.env.MINIO_ENDPOINT,
+  MINIO_PORT: process.env.MINIO_PORT,
+  MINIO_ACCESS_KEY: process.env.MINIO_ACCESS_KEY,
+  MINIO_SECRET_KEY: process.env.MINIO_SECRET_KEY,
+  API_TOKEN: process.env.API_TOKEN,
+  JWT_SECRET: process.env.JWT_SECRET,
+  CLIENT_DOMAIN: process.env.CLIENT_DOMAIN,
+})
