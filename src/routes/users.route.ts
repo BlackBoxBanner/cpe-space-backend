@@ -3,6 +3,6 @@ import { Router } from 'express'
 
 const routers = Router()
 
-routers.get('/:id', usersGetController)
+routers.get('/', usersGetController)
 
 export default routers
