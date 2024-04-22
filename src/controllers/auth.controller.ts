@@ -9,11 +9,8 @@ import jwt from "jsonwebtoken"
 import { v4 as uuidv4 } from 'uuid';
 import { env } from "@/utils/env"
 
-export const loginController: APIController<string> = async (req, res, _next) => {
+export const loginController: APIController<{ session: string, userId: string }> = async (req, res, _next) => {
     try {
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'POST');
-
         const body = decrypt(req.body.data)
 
         const validateLogin = UserSchema.pick({ studentid: true, password: true }).safeParse(body)
@@ -34,6 +31,8 @@ export const loginController: APIController<string> = async (req, res, _next) =>
 
         if (!match) throw new Error("password doest not match")
 
+        if (user.touched === false) throw new Error("Please change your password first")
+
         const token = jwt.sign(
             { email: user.email },
             env.JWT_SECRET,
@@ -44,7 +43,7 @@ export const loginController: APIController<string> = async (req, res, _next) =>
 
         res.cookie("user-id", user.id, cookieOptions);
 
-        return res.status(200).json({ data: token })
+        return res.status(200).json({ data: { session: token, userId: user.id } })
 
     } catch (error) {
         return res.status(400).json(customError(error))
@@ -110,7 +109,8 @@ export const changePasswordController: APIController<string> = async (req, res, 
                 studentid
             },
             data: {
-                password: hash
+                password: hash,
+                touched: true
             }
         })
 
@@ -119,4 +119,34 @@ export const changePasswordController: APIController<string> = async (req, res, 
     } catch (error) {
         return res.status(200).json(customError(error))
     }
+}
+
+export const checkPasswordController: APIController<string> = async (req, res, _next) => {
+    try {
+        const body = decrypt(req.body.data)
+
+        const validateLogin = UserSchema.pick({ studentid: true, password: true }).safeParse(body)
+
+        if (!validateLogin.success) return res.status(403).json({ error: { zodError: validateLogin.error.format() } })
+
+        const { password, studentid } = validateLogin.data
+
+        const user = await prisma.user.findUnique({
+            where: {
+                studentid
+            }
+        })
+
+        if (!user) throw new Error("user does not exist")
+
+        const match = await bcrypt.compare(password, user.password)
+
+        if (!match) throw new Error("password doest not match")
+
+        return res.status(200).json({ data: "Matched" })
+
+    } catch (error) {
+        return res.status(400).json(customError(error))
+    }
+
 }
