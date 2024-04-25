@@ -112,4 +112,4 @@ export const usersPostController: APIController<Prisma.BatchPayload> = async (
     } catch (error) {
         return res.status(400).json(customError(error));
     }
-};}
+};
