@@ -3,7 +3,7 @@ import { Router } from 'express'
 
 const routers = Router()
 
-routers.get('/:id', usersGetController)
+routers.get('/', usersGetController)
 routers.post('/', usersPostController)
 
 export default routers
