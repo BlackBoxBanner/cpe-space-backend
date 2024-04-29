@@ -40,7 +40,7 @@ export const usersGetController: APIController<UserExcludePassword | UserExclude
             },
         });
 
-        return res.status(200).json({ data: userData.length > 1 ? userData : userData[0] });
+        return res.status(200).json({ data: userData });
 
     } catch (error) {
         return res.status(200).json(customError(error));

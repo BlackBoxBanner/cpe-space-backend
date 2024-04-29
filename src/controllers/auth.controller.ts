@@ -8,6 +8,9 @@ import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import { v4 as uuidv4 } from 'uuid';
 import { env } from "@/utils/env"
+import { mailerSend, sentFrom, setRecipients } from "@/utils/mailersend"
+import { EmailParams, Sender } from "mailersend"
+import { User } from "@prisma/client"
 
 export const loginController: APIController<{ session: string, userId: string }> = async (req, res, _next) => {
     try {
@@ -145,6 +148,88 @@ export const checkPasswordController: APIController<string> = async (req, res, _
 
         return res.status(200).json({ data: "Matched" })
 
+    } catch (error) {
+        return res.status(400).json(customError(error))
+    }
+
+}
+
+export const changePasswordValidTicketController: APIController<User> = async (req, res, _next) => {
+    const { data } = req.params
+
+    if (!data) return res.status(403).json({
+        error: {
+            customError: "ticket is required"
+        }
+    })
+
+    try {
+
+        const validTicket = jwt.verify(data, env.JWT_SECRET) as {
+            studentid: string,
+            password: string,
+            iat: number,
+            exp: number,
+        }
+
+        const user = await prisma.user.findUnique({ where: { studentid: validTicket.studentid } })
+
+        if (!user) throw new Error("invalid ticke")
+
+        const isPasswordSame = user.password === validTicket.password
+
+        if ((validTicket.exp * 1000) >= new Date().getTime() && isPasswordSame) {
+            return res.status(200).json({ data: user })
+        }
+
+        throw new Error("invalid ticket")
+    } catch (error) {
+        console.log(error);
+
+        return res.status(400).json(customError(error))
+    }
+}
+
+export const generateChangePasswordTicketController: APIController<string, { data: { studentid: string } }> = async (req, res, _next) => {
+    const data = req.body.data
+
+
+    if (!data.studentid) return res.status(403).json({
+        error: {
+            customError: "studentid is required"
+        }
+    })
+
+    try {
+        const user = await prisma.user.findUnique({
+            where: {
+                studentid: data.studentid
+            }
+        })
+
+        if (!user) throw new Error("user does not exist")
+
+        const ticket = jwt.sign(
+            { studentid: user.studentid, password: user.password },
+            env.JWT_SECRET,
+            { expiresIn: "1d" }
+        );
+
+        if (!user.email) throw new Error("user does not have email")
+
+        const emailParams = new EmailParams()
+            .setFrom(sentFrom)
+            .setTo(setRecipients({ email: user.email, name: user.name }))
+            .setReplyTo(sentFrom)
+            .setSubject("Change Password Ticket")
+            .setHtml(`Your ticket is <a href="${env.CLIENT_DOMAIN}/change-password/${ticket}">here</a>`)
+            .setText(`Your ticket is ${env.CLIENT_DOMAIN}/change-password/${ticket}`)
+
+        const emailRes = await mailerSend.email.send(emailParams)
+
+        console.log(emailRes.body)
+
+        return res.status(200).json({ data: ticket })
     } catch (error) {
         return res.status(400).json(customError(error))
     }
