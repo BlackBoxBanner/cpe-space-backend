@@ -12,6 +12,7 @@ import { mailerSend, sentFrom, setRecipients } from "@/utils/mailersend"
 import { EmailParams, Sender } from "mailersend"
 import { User } from "@prisma/client"
 
+
 export const loginController: APIController<{ session: string, userId: string }> = async (req, res, _next) => {
     try {
         const body = decrypt(req.body.data)
@@ -113,7 +114,7 @@ export const changePasswordController: APIController<string> = async (req, res, 
             },
             data: {
                 password: hash,
-                touched: true
+                touched: true,
             }
         })
 
@@ -123,6 +124,7 @@ export const changePasswordController: APIController<string> = async (req, res, 
         return res.status(200).json(customError(error))
     }
 }
+
 
 export const checkPasswordController: APIController<string> = async (req, res, _next) => {
     try {
