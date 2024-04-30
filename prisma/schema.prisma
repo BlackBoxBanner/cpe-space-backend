@@ -10,14 +10,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserStatus {
-  GRADUATED
-  ENROLLED
-}
-
 enum Role {
   ADMIN
   STUDENT
+  TEACHER
+  OFFICER
 }
 
 enum Program {
@@ -33,31 +30,33 @@ enum CommunitiesStatus {
 }
 
 model User {
-  id        String     @id @default(uuid())
-  studentid String     @unique
+  id        String  @id @default(uuid())
+  studentid String  @unique
   name      String
-  email     String     @unique
-  phone     String?    @unique
-  program   Program    @default(REGULAR)
+  email     String  @unique
+  phone     String? @unique
+  program   Program @default(REGULAR)
   password  String
   image     String?
-  touched   Boolean    @default(false) // record if user has logged in for the first time
-  role      Role       @default(STUDENT)
-  student   UserStatus @default(ENROLLED)
+  touched   Boolean @default(false) // record if user has logged in for the first time
+  role      Role    @default(STUDENT)
 
-  // Blog                      Blog[]
   ConversationsParticipants ConversationsParticipants[]
   Message                   Message[]
   Communities               Communities[]
   Post                      Post[]
   Comment                   Comment[]
   Replay                    Replay[]
+  PostLikes                 PostLikes[]
+  CommentLikes              CommentLikes[]
+  ReplayLikes               ReplayLikes[]
 }
 
 model Communities {
   id        String            @id @default(uuid())
   userId    String
   name      String
+  image     String
   status    CommunitiesStatus @default(PUBLIC)
   createdAt DateTime          @default(now())
 
@@ -66,26 +65,46 @@ model Communities {
 }
 
 model Topic {
-  id   String @id @default(uuid())
-  name String
-
-  Post Post[]
+  id        String      @id @default(uuid())
+  name      String
+  posts     Post[] // Define a many-to-many relationship with posts
+  PostTopic PostTopic[]
 }
 
 model Post {
   id            String   @id @default(uuid())
   content       String   @db.Text
   userId        String
-  communitiesId String
-  topicId       String
+  communitiesId String?
   likes         Int      @default(0)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  user       User        @relation(fields: [userId], references: [id])
-  comunities Communities @relation(fields: [communitiesId], references: [id])
-  topic      Topic       @relation(fields: [topicId], references: [id])
-  Comment    Comment[]
+  user        User         @relation(fields: [userId], references: [id])
+  communities Communities? @relation(fields: [communitiesId], references: [id])
+  topics      Topic[] // Define a many-to-many relationship with topics
+  comments    Comment[]
+  postLikes   PostLikes[]
+  PostTopic   PostTopic[]
+}
+
+model PostTopic {
+  postId  String
+  topicId String
+
+  post  Post  @relation(fields: [postId], references: [id])
+  topic Topic @relation(fields: [topicId], references: [id])
+
+  @@id([postId, topicId])
+}
+
+model PostLikes {
+  id     String @id @default(uuid())
+  postId String
+  userId String
+
+  post Post @relation(fields: [postId], references: [id])
+  user User @relation(fields: [userId], references: [id])
 }
 
 model Comment {
@@ -97,9 +116,19 @@ model Comment {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  post   Post     @relation(fields: [postId], references: [id])
-  user   User     @relation(fields: [userId], references: [id])
-  Replay Replay[]
+  post         Post           @relation(fields: [postId], references: [id])
+  user         User           @relation(fields: [userId], references: [id])
+  Replay       Replay[]
+  CommentLikes CommentLikes[]
+}
+
+model CommentLikes {
+  id        String @id @default(uuid())
+  commentId String
+  userId    String
+
+  post Comment @relation(fields: [commentId], references: [id])
+  user User    @relation(fields: [userId], references: [id])
 }
 
 model Replay {
@@ -111,8 +140,18 @@ model Replay {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  comment Comment @relation(fields: [commentId], references: [id])
-  user    User    @relation(fields: [userId], references: [id])
+  comment     Comment       @relation(fields: [commentId], references: [id])
+  user        User          @relation(fields: [userId], references: [id])
+  ReplayLikes ReplayLikes[]
+}
+
+model ReplayLikes {
+  id       String @id @default(uuid())
+  replayId String
+  userId   String
+
+  post Replay @relation(fields: [replayId], references: [id])
+  user User   @relation(fields: [userId], references: [id])
 }
 
 model Conversations {
