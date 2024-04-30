@@ -6,65 +6,29 @@ import { Prisma, User } from "@prisma/client";
 import { z } from "zod";
 
 type UserExcludePassword = Omit<User, "password">;
+export const usersGetController: APIController<UserExcludePassword | UserExcludePassword[]> = async(
 export const usersGetController: APIController<UserExcludePassword | UserExcludePassword[]> = async (
     req,
     res,
     _next
 ) => {
     try {
-        const query = req.query;
+        const queries = req.query;
 
-        const id = query.id as string;
-        const stuendtid = query.studentid as string;
-
-
-        if (id) {
-            const userWithId = await prisma.user.findUnique({
-                where: { id },
-                select: {
-                    id: true,
-                    studentid: true,
-                    name: true,
-                    email: true,
-                    phone: true,
-                    program: true,
-                    image: true,
-                    touched: true,
-                    role: true,
-                    student: true,
-                },
-            });
-
-            if (!userWithId) throw new Error("User not found");
-
-            return res.status(200).json({ data: userWithId });
-        }
-
-        if (stuendtid) {
-            console.log("studentid");
-
-            const userWithStudentId = await prisma.user.findUnique({
-                where: { studentid: stuendtid },
-                select: {
-                    id: true,
-                    studentid: true,
-                    name: true,
-                    email: true,
-                    phone: true,
-                    program: true,
-                    image: true,
-                    touched: true,
-                    role: true,
-                    student: true,
-                },
-            });
-
-            if (!userWithStudentId) throw new Error("User not found");
-
-            return res.status(200).json({ data: userWithStudentId });
+        const query: Partial<Omit<User, "password">> = {
+            id: queries.id ? queries.id.toString() : undefined,
+            studentid: queries.studentid ? queries.studentid.toString() : undefined,
+            email: queries.email ? queries.email.toString() : undefined,
+            name: queries.name ? queries.name.toString() : undefined,
+            program: queries.program ? queries.program as User["program"] : undefined,
+            role: queries.role ? queries.role as User["role"] : undefined,
+            touched: queries.touched ? (queries.touched == "true" ? true : false) : undefined,
         }
 
         const userData = await prisma.user.findMany({
+            where: {
+                ...query
+            },
             select: {
                 id: true,
                 studentid: true,
