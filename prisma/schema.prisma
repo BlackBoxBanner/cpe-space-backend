@@ -27,11 +27,16 @@ enum Program {
   RESFENTIAL_COLLEGE
 }
 
+enum CommunitiesStatus {
+  PUBLIC
+  PRIVATE
+}
+
 model User {
   id        String     @id @default(uuid())
   studentid String     @unique
   name      String
-  email     String?    @unique
+  email     String     @unique
   phone     String?    @unique
   program   Program    @default(REGULAR)
   password  String
@@ -40,26 +45,74 @@ model User {
   role      Role       @default(STUDENT)
   student   UserStatus @default(ENROLLED)
 
-  Blog                      Blog[]
+  // Blog                      Blog[]
   ConversationsParticipants ConversationsParticipants[]
   Message                   Message[]
-  Anouncement               Anouncement[]
-  Event                     Event[]
-  EventPost                 EventPost[]
-  EventParticipants         EventParticipants[]
+  Communities               Communities[]
+  Post                      Post[]
+  Comment                   Comment[]
+  Replay                    Replay[]
 }
 
-model Blog {
-  id        String  @id @default(uuid())
-  authorId  String
-  title     String
-  content   String  @db.Text
-  published Boolean @default(false)
+model Communities {
+  id        String            @id @default(uuid())
+  userId    String
+  name      String
+  status    CommunitiesStatus @default(PUBLIC)
+  createdAt DateTime          @default(now())
 
+  owner User   @relation(fields: [userId], references: [id])
+  Post  Post[]
+}
+
+model Topic {
+  id   String @id @default(uuid())
+  name String
+
+  Post Post[]
+}
+
+model Post {
+  id            String   @id @default(uuid())
+  content       String   @db.Text
+  userId        String
+  communitiesId String
+  topicId       String
+  likes         Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user       User        @relation(fields: [userId], references: [id])
+  comunities Communities @relation(fields: [communitiesId], references: [id])
+  topic      Topic       @relation(fields: [topicId], references: [id])
+  Comment    Comment[]
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  postId    String
+  userId    String
+  content   String   @db.Text
+  likes     Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  author User @relation(fields: [authorId], references: [id])
+  post   Post     @relation(fields: [postId], references: [id])
+  user   User     @relation(fields: [userId], references: [id])
+  Replay Replay[]
+}
+
+model Replay {
+  id        String   @id @default(uuid())
+  commentId String
+  userId    String
+  content   String   @db.Text
+  likes     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  comment Comment @relation(fields: [commentId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
 }
 
 model Conversations {
@@ -94,59 +147,4 @@ model Message {
 
   conversation Conversations @relation(fields: [conversationId], references: [id])
   author       User          @relation(fields: [authorId], references: [id])
-}
-
-model Anouncement {
-  id        String  @id @default(uuid())
-  authorId  String
-  title     String
-  content   String  @db.Text
-  published Boolean @default(false)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  author User @relation(fields: [authorId], references: [id])
-}
-
-model EventPost {
-  id        String  @id @default(uuid())
-  authorId  String
-  title     String
-  content   String  @db.Text
-  published Boolean @default(false)
-  eventId   String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  author User  @relation(fields: [authorId], references: [id])
-  event  Event @relation(fields: [eventId], references: [id])
-}
-
-model Event {
-  id        String   @id @default(uuid())
-  authorId  String
-  title     String
-  content   String   @db.Text
-  eventDate DateTime
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  EventPost         EventPost[]
-  EventParticipants EventParticipants[]
-
-  author User @relation(fields: [authorId], references: [id])
-}
-
-model EventParticipants {
-  id      String @id @default(uuid())
-  eventId String
-  userId  String
-
-  createdAt DateTime @default(now())
-
-  event Event @relation(fields: [eventId], references: [id])
-  user  User  @relation(fields: [userId], references: [id])
 }
