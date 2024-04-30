@@ -6,7 +6,7 @@ import { Prisma, User } from "@prisma/client";
 import { z } from "zod";
 
 type UserExcludePassword = Omit<User, "password">;
-export const usersGetController: APIController<UserExcludePassword | UserExcludePassword[]> = async(
+
 export const usersGetController: APIController<UserExcludePassword | UserExcludePassword[]> = async (
     req,
     res,
