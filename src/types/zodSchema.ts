@@ -1,17 +1,19 @@
 import zod from "zod";
 import validator from 'validator';
 
-const RoleEnum = zod.enum(['STUDENT', 'TEACHER', 'ADMIN', 'OFFICER']);
+const RoleEnum = zod.enum(['ADMIN', 'STUDENT', 'TEACHER', 'OFFICER']);
 
 const CommunitiesStatusEnum = zod.enum(['PUBLIC', 'PRIVATE']);
+
+const ProgramEnum = zod.enum(["REGULAR", "INTERNATIONAL", "HEALTH_DATA_SCIENCE", "RESFENTIAL_COLLEGE"])
 
 export const UserSchema = zod.object({
   id: zod.string().uuid().refine(validator.isUUID),
   studentid: zod.string(),
   name: zod.string(),
   email: zod.string().email().refine(validator.isEmail),
-  phone: zod.string().optional().refine(value => value && validator.isMobilePhone(value)),
-  program: RoleEnum.default('STUDENT'),
+  phone: zod.string().optional(),
+  program: ProgramEnum.default('REGULAR'),
   password: zod.string(),
   image: zod.string().optional(),
   touched: zod.boolean().default(false),

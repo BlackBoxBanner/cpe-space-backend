@@ -46,10 +46,10 @@ model User {
   Communities               Communities[]
   Post                      Post[]
   Comment                   Comment[]
-  Replay                    Replay[]
+  // Replay                    Replay[]
   PostLikes                 PostLikes[]
-  CommentLikes              CommentLikes[]
-  ReplayLikes               ReplayLikes[]
+  // CommentLikes              CommentLikes[]
+  // ReplayLikes               ReplayLikes[]
 }
 
 model Communities {
@@ -116,43 +116,43 @@ model Comment {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  post         Post           @relation(fields: [postId], references: [id])
-  user         User           @relation(fields: [userId], references: [id])
-  Replay       Replay[]
-  CommentLikes CommentLikes[]
+  post Post @relation(fields: [postId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+  // Replay       Replay[]
+  // CommentLikes CommentLikes[]
 }
 
-model CommentLikes {
-  id        String @id @default(uuid())
-  commentId String
-  userId    String
+// model CommentLikes {
+//   id        String @id @default(uuid())
+//   commentId String
+//   userId    String
 
-  post Comment @relation(fields: [commentId], references: [id])
-  user User    @relation(fields: [userId], references: [id])
-}
+//   post Comment @relation(fields: [commentId], references: [id])
+//   user User    @relation(fields: [userId], references: [id])
+// }
 
-model Replay {
-  id        String   @id @default(uuid())
-  commentId String
-  userId    String
-  content   String   @db.Text
-  likes     Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// model Replay {
+//   id        String   @id @default(uuid())
+//   commentId String
+//   userId    String
+//   content   String   @db.Text
+//   likes     Int      @default(0)
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
 
-  comment     Comment       @relation(fields: [commentId], references: [id])
-  user        User          @relation(fields: [userId], references: [id])
-  ReplayLikes ReplayLikes[]
-}
+//   comment     Comment       @relation(fields: [commentId], references: [id])
+//   user        User          @relation(fields: [userId], references: [id])
+//   ReplayLikes ReplayLikes[]
+// }
 
-model ReplayLikes {
-  id       String @id @default(uuid())
-  replayId String
-  userId   String
+// model ReplayLikes {
+//   id       String @id @default(uuid())
+//   replayId String
+//   userId   String
 
-  post Replay @relation(fields: [replayId], references: [id])
-  user User   @relation(fields: [userId], references: [id])
-}
+//   post Replay @relation(fields: [replayId], references: [id])
+//   user User   @relation(fields: [userId], references: [id])
+// }
 
 model Conversations {
   id        String   @id @default(uuid())

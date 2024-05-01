@@ -1,7 +1,6 @@
 import { APIController, APIControllerImage } from "@/types/responseType";
 import { customError } from "@/utils/customError";
 import { useMinio } from "@/utils/minio";
-import { BucketItem } from "minio";
 
 type UploadBody = {
   name: string;
