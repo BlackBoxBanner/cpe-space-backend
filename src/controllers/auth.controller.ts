@@ -73,7 +73,7 @@ const UserFormSchema = UserSchema.omit({
     id: true,
     touched: true,
     role: true,
-    program: true,
+    // program: true,
 })
 
 type UserFormType = zod.infer<typeof UserFormSchema>
@@ -83,6 +83,9 @@ export const registerController: APIController<string> = async (req, res, _next)
         const { confirmPassword, ...restbody } = decrypt<UserFormType & { confirmPassword: string }>(req.body.data)
 
         const validateUser = UserFormSchema.safeParse(restbody)
+
+        console.log(validateUser);
+
 
         if (!validateUser.success) return res.status(403).json({ error: { zodError: validateUser.error.format() } })
 
@@ -97,6 +100,7 @@ export const registerController: APIController<string> = async (req, res, _next)
                 id: uuidv4(),
                 ...restData,
                 password: hashPassword,
+                program: restData.program as User["program"],
             }
         })
 
