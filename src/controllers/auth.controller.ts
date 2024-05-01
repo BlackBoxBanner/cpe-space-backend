@@ -121,6 +121,16 @@ export const changePasswordController: APIController<string> = async (req, res, 
 
         const hash = await bcrypt.hash(password, 10)
 
+        const user = await prisma.user.findUnique({
+            where: {
+                studentid
+            }
+        })
+
+        if (!user) throw new Error("user does not exist")
+
+        if (await bcrypt.compare(password, user.password)) throw new Error("can not use the same password")
+
         await prisma.user.update({
             where: {
                 studentid
