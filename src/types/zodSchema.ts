@@ -1,7 +1,7 @@
 import zod from "zod";
 import validator from 'validator';
 
-const RoleEnum = zod.enum(['STUDENT', 'TEACHER', 'ADMIN', 'OFFICER']);
+const RoleEnum = zod.enum(['ADMIN', 'STUDENT', 'TEACHER', 'OFFICER']);
 
 const CommunitiesStatusEnum = zod.enum(['PUBLIC', 'PRIVATE']);
 

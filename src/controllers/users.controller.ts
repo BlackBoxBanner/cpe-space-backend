@@ -1,13 +1,17 @@
+import bcrypt from 'bcrypt';
 import { APIController, PostBody } from "@/types/responseType";
-import { UserFormSchema } from "@/types/zodSchema";
+import { UserSchema } from "@/types/zodSchema";
 import { customError } from "@/utils/customError";
 import prisma from "@/utils/prisma";
 import { Prisma, User } from "@prisma/client";
 import { z } from "zod";
 
-type UserExcludePassword = Omit<User, "password">;
 
-export const usersGetController: APIController<UserExcludePassword | UserExcludePassword[]> = async (
+const GetUserSchema = UserSchema.omit({ password: true });
+
+type GetUserType = z.infer<typeof GetUserSchema>;
+
+export const usersGetController: APIController<GetUserType[]> = async (
     req,
     res,
     _next
@@ -22,7 +26,7 @@ export const usersGetController: APIController<UserExcludePassword | UserExclude
             name: queries.name ? queries.name.toString() : undefined,
             program: queries.program ? queries.program as User["program"] : undefined,
             role: queries.role ? queries.role as User["role"] : undefined,
-            touched: queries.touched ? (queries.touched == "true" ? true : false) : undefined,
+            touched: queries.touched ? (queries.touched ? true : false) : undefined,
         }
 
         const userData = await prisma.user.findMany({
@@ -39,41 +43,16 @@ export const usersGetController: APIController<UserExcludePassword | UserExclude
                 image: true,
                 touched: true,
                 role: true,
-                student: true,
             },
-        });
+        })
 
-        return res.status(200).json({ data: userData });
+        const userVerify = z.array(GetUserSchema).safeParse(userData);
+        if (!userVerify.success) throw new Error(userVerify.error.errors[0].message);
+
+        return res.status(200).json({ data: userVerify.data });
 
     } catch (error) {
         return res.status(200).json(customError(error));
 
     };
 }
-
-export const usersPostController: APIController<Prisma.BatchPayload> = async (
-    req,
-    res,
-    _next
-) => {
-    try {
-        const UserFormSchemaArray = z.array(UserFormSchema);
-
-        const validateUser = UserFormSchemaArray.safeParse(req.body);
-
-        if (!validateUser.success)
-            return res
-                .status(400)
-                .json({ error: { zodError: validateUser.error.format() } });
-
-        const userData = await prisma.user.createMany({
-            data: validateUser.data,
-            skipDuplicates: true,
-        });
-
-        return res.status(201).json({ data: userData });
-
-    } catch (error) {
-        return res.status(400).json(customError(error));
-    }
-};

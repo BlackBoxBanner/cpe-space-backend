@@ -1,7 +1,8 @@
+import zod from 'zod';
 import { APIController } from "@/types/responseType"
 import { cookieOptions } from "@/utils/cookies"
 import { customError } from "@/utils/customError"
-import { UserFormSchema, UserFormType, UserSchema, UserType } from "@/types/zodSchema"
+import { UserSchema } from "@/types/zodSchema"
 import { decrypt } from "@/utils/decryption"
 import prisma from "@/utils/prisma"
 import bcrypt from "bcrypt"
@@ -9,9 +10,10 @@ import jwt from "jsonwebtoken"
 import { v4 as uuidv4 } from 'uuid';
 import { env } from "@/utils/env"
 import { mailerSend, sentFrom, setRecipients } from "@/utils/mailersend"
-import { EmailParams, Sender } from "mailersend"
+import { EmailParams } from "mailersend"
 import { User } from "@prisma/client"
 
+type UserType = zod.infer<typeof UserSchema>
 
 export const loginController: APIController<{ session: string, userId: string }> = async (req, res, _next) => {
     try {
@@ -67,6 +69,15 @@ export const signoutController: APIController<string> = async (_req, res, _next)
 
 }
 
+const UserFormSchema = UserSchema.omit({
+    id: true,
+    touched: true,
+    role: true,
+    program: true,
+})
+
+type UserFormType = zod.infer<typeof UserFormSchema>
+
 export const registerController: APIController<string> = async (req, res, _next) => {
     try {
         const { confirmPassword, ...restbody } = decrypt<UserFormType & { confirmPassword: string }>(req.body.data)
@@ -84,8 +95,6 @@ export const registerController: APIController<string> = async (req, res, _next)
         await prisma.user.create({
             data: {
                 id: uuidv4(),
-                touched: false,
-                role: "STUDENT",
                 ...restData,
                 password: hashPassword,
             }
