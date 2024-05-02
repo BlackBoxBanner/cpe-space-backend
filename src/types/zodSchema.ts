@@ -25,9 +25,13 @@ export const CommunitiesSchema = zod.object({
   userId: zod.string().uuid().refine(validator.isUUID),
   name: zod.string(),
   image: zod.string(),
-  status: CommunitiesStatusEnum.default('PUBLIC'),
+  status: CommunitiesStatusEnum.default('PUBLIC').optional(),
   createdAt: zod.date().default(() => new Date()),
 });
+
+export const CommunitiesFormSchema = CommunitiesSchema.omit({ id: true, userId: true, createdAt: true });
+export const CommunitiesUpdateFormSchema = CommunitiesSchema.omit({ createdAt: true });
+
 
 export const TopicSchema = zod.object({
   id: zod.string().uuid().refine(validator.isUUID),
