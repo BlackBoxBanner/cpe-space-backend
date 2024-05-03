@@ -35,10 +35,9 @@ export const usersGetController: APIController<Omit<User, "password">[]> = async
                 image: true,
                 touched: true,
                 role: true,
+                class: true,
             },
         })
-
-        console.log(userData);
 
         return res.status(200).json({ data: userData });
 
