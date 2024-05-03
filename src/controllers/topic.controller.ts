@@ -37,8 +37,8 @@ export const getTopicController: APIController<Topic[]> = async (
 ) => {
     try {
 
-        const topics = await prisma.topic.findMany();
         if(req.query.id === undefined && req.query.name === undefined) {
+            const topics = await prisma.topic.findMany();
             return res.status(200).json({ data: topics });
         }
 
