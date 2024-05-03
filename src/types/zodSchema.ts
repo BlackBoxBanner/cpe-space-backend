@@ -25,7 +25,7 @@ export const CommunitiesSchema = zod.object({
   userId: zod.string().uuid().refine(validator.isUUID),
   name: zod.string(),
   image: zod.string(),
-  status: CommunitiesStatusEnum.default('PUBLIC').optional(),
+  status: CommunitiesStatusEnum.default('PUBLIC'),
   createdAt: zod.date().default(() => new Date()),
 });
 
