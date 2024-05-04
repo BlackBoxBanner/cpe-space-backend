@@ -35,15 +35,47 @@ export const usersGetController: APIController<Omit<User, "password">[]> = async
                 image: true,
                 touched: true,
                 role: true,
+                class: true,
             },
         })
-
-        console.log(userData);
 
         return res.status(200).json({ data: userData });
 
     } catch (error) {
-        return res.status(200).json(customError(error));
-
+        return res.status(400).json(customError(error));
     };
+}
+
+export const searchUserGetController: APIController<Omit<User, "password">[]> = async (req, res, _next) => {
+    try {
+        const queries = req.query;
+
+        const userData = await prisma.user.findMany({
+            where: {
+                OR: [
+                    { name: { contains: queries.search?.toString(), mode: "insensitive" } },
+                    { email: { contains: queries.search?.toString(), mode: "insensitive" } },
+                    { studentid: { contains: queries.search?.toString(), mode: "insensitive" } },
+                    { class: { contains: queries.search?.toString(), mode: "insensitive" } },
+                ],
+            },
+            select: {
+                id: true,
+                studentid: true,
+                name: true,
+                email: true,
+                phone: true,
+                program: true,
+                image: true,
+                touched: true,
+                role: true,
+                class: true,
+            },
+        })
+
+        return res.status(200).json({ data: userData });
+
+    } catch (error) {
+        return res.status(400).json(customError(error));
+    }
 }

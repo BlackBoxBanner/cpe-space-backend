@@ -27,7 +27,7 @@ export const uploadController: APIController<string, UploadBody> = async (req, r
 
     return res.status(200).json({ data: name });
   } catch (error) {
-    return res.status(200).json(customError(error))
+    return res.status(400).json(customError(error))
   }
 };
 

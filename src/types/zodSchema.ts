@@ -11,11 +11,12 @@ export const UserSchema = zod.object({
   id: zod.string().uuid().refine(validator.isUUID),
   studentid: zod.string(),
   name: zod.string(),
+  class: zod.string(),
   email: zod.string().email().refine(validator.isEmail),
   phone: zod.string().optional(),
   program: ProgramEnum.default('REGULAR'),
   password: zod.string(),
-  image: zod.string().optional(),
+  image: zod.string(),
   touched: zod.boolean().default(false),
   role: RoleEnum.default('STUDENT'),
 });
