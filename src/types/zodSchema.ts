@@ -1,4 +1,4 @@
-import zod from "zod";
+import zod, { z } from "zod";
 import validator from 'validator';
 
 const RoleEnum = zod.enum(['ADMIN', 'STUDENT', 'TEACHER', 'OFFICER']);
@@ -47,10 +47,22 @@ export const PostSchema = zod.object({
   createdAt: zod.date().default(() => new Date()),
   updatedAt: zod.date().optional(),
 });
+export type PostType = z.infer<typeof PostSchema>
 
 export const PostTopicSchema = zod.object({
   postId: zod.string().uuid().refine(validator.isUUID),
   topicId: zod.string().uuid().refine(validator.isUUID),
+});
+
+export const PostFormSchema = zod.object({
+  id: zod.string().uuid().refine(validator.isUUID),
+  content: zod.string(),
+  userId: zod.string().uuid().refine(validator.isUUID),
+  communitiesId: zod.string().refine(validator.isUUID).optional(),
+  likes: zod.number().default(0),
+  createdAt: zod.date().default(() => new Date()),
+  updatedAt: zod.date().optional(),
+  topicId: zod.array(z.string().uuid().refine(validator.isUUID)),
 });
 
 export const PostLikesSchema = zod.object({
