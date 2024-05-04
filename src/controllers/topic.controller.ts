@@ -1,10 +1,10 @@
 import { APIController } from "@/types/responseType";
-import { TopicSchema } from "@/types/zodSchema";
+import { TopicSchema, TopicType } from "@/types/zodSchema";
 import { customError } from "@/utils/customError";
 import prisma from "@/utils/prisma";
 import { Topic } from "@prisma/client";
 
-export const createTopicController: APIController<Topic> = async (
+export const createTopicController: APIController<TopicType> = async (
     req,
     res,
     _next
@@ -30,7 +30,7 @@ export const createTopicController: APIController<Topic> = async (
     }
 };
 
-export const getTopicController: APIController<Topic[]> = async (
+export const getTopicController: APIController<TopicType[]> = async (
     req,
     res,
     _next
