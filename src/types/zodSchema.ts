@@ -30,6 +30,10 @@ export const CommunitiesSchema = zod.object({
   createdAt: zod.date().default(() => new Date()),
 });
 
+export const CommunitiesFormSchema = CommunitiesSchema.omit({ id: true, userId: true, createdAt: true });
+export const CommunitiesUpdateFormSchema = CommunitiesSchema.omit({ createdAt: true });
+
+
 export const TopicSchema = zod.object({
   id: zod.string().uuid().refine(validator.isUUID),
   name: zod.string(),
