@@ -40,6 +40,9 @@ export const TopicSchema = zod.object({
   name: zod.string(),
 });
 
+export type TopicType = z.infer<typeof TopicSchema>;
+
+
 export const PostSchema = zod.object({
   id: zod.string().uuid().refine(validator.isUUID),
   content: zod.string(),
