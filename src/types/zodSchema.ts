@@ -1,4 +1,4 @@
-import zod from "zod";
+import zod, { z } from "zod";
 import validator from 'validator';
 
 const RoleEnum = zod.enum(['ADMIN', 'STUDENT', 'TEACHER', 'OFFICER']);
@@ -6,6 +6,8 @@ const RoleEnum = zod.enum(['ADMIN', 'STUDENT', 'TEACHER', 'OFFICER']);
 const CommunitiesStatusEnum = zod.enum(['PUBLIC', 'PRIVATE']);
 
 const ProgramEnum = zod.enum(["REGULAR", "INTERNATIONAL", "HEALTH_DATA_SCIENCE", "RESFENTIAL_COLLEGE"])
+
+
 
 export const UserSchema = zod.object({
   id: zod.string().uuid().refine(validator.isUUID),
@@ -31,7 +33,7 @@ export const CommunitiesSchema = zod.object({
 
 export const CommunitiesFormSchema = CommunitiesSchema.omit({ id: true, userId: true, createdAt: true });
 export const CommunitiesUpdateFormSchema = CommunitiesSchema.omit({ createdAt: true });
-
+export type CommunitiesType = z.infer<typeof CommunitiesFormSchema>;
 
 export const TopicSchema = zod.object({
   id: zod.string().uuid().refine(validator.isUUID),
