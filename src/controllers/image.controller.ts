@@ -54,11 +54,9 @@ export const getPathController: APIController<string[]> = async (
   try {
     const minio = useMinio();
     const list = await minio.listBuckets();
-    return res
-      .status(200)
-      .json({
-        data: list.reduce((acc, cur) => acc.concat(cur.name), [] as string[]),
-      });
+    return res.status(200).json({
+      data: list.reduce((acc, cur) => acc.concat(cur.name), [] as string[]),
+    });
   } catch (error) {
     return res.status(200).json(customError(error));
   }

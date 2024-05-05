@@ -94,7 +94,7 @@ model PostTopic {
   postId  String
   topicId String
 
-  post  Post  @relation(fields: [postId], references: [id])
+  post  Post  @relation(fields: [postId], references: [id], onDelete: Cascade)
   topic Topic @relation(fields: [topicId], references: [id])
 
   @@id([postId, topicId])
