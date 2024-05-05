@@ -100,7 +100,7 @@ export const registerController: APIController<string> = async (req, res, _next)
                 id: uuidv4(),
                 ...restData,
                 password: hashPassword,
-                program: restData.program as User["program"],
+                program: restData.program as UserType["program"],
             }
         })
 
