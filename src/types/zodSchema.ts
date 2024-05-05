@@ -1,11 +1,16 @@
-import { z } from "zod";
+import { z } from 'zod';
 import validator from 'validator';
 
 const RoleEnum = z.enum(['ADMIN', 'STUDENT', 'TEACHER', 'OFFICER']);
 
 const CommunitiesStatusEnum = z.enum(['PUBLIC', 'PRIVATE']);
 
-const ProgramEnum = z.enum(["REGULAR", "INTERNATIONAL", "HEALTH_DATA_SCIENCE", "RESFENTIAL_COLLEGE"])
+const ProgramEnum = z.enum([
+  'REGULAR',
+  'INTERNATIONAL',
+  'HEALTH_DATA_SCIENCE',
+  'RESFENTIAL_COLLEGE',
+]);
 
 export const UserSchema = z.object({
   id: z.string().uuid().refine(validator.isUUID),
@@ -30,9 +35,14 @@ export const CommunitiesSchema = z.object({
   createdAt: z.date().default(() => new Date()),
 });
 
-export const CommunitiesFormSchema = CommunitiesSchema.omit({ id: true, userId: true, createdAt: true });
-export const CommunitiesUpdateFormSchema = CommunitiesSchema.omit({ createdAt: true });
-
+export const CommunitiesFormSchema = CommunitiesSchema.omit({
+  id: true,
+  userId: true,
+  createdAt: true,
+});
+export const CommunitiesUpdateFormSchema = CommunitiesSchema.omit({
+  createdAt: true,
+});
 
 export const TopicSchema = z.object({
   id: z.string().uuid().refine(validator.isUUID),

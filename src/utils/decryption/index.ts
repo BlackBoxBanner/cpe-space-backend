@@ -1,5 +1,5 @@
-import forge from "node-forge";
-import { privateKey } from "@/utils/decryption/generate";
+import forge from 'node-forge';
+import { privateKey } from '@/utils/decryption/generate';
 
 type AesKeyPair = {
   key: string;
@@ -28,15 +28,15 @@ export const decrypt = <T = unknown>(rawData: string) => {
     if (error instanceof Error) {
       throw new Error(`Failed to decrypt data -> ${error.message}`);
     }
-    throw new Error("Failed to decrypt data -> Unknown error");
+    throw new Error('Failed to decrypt data -> Unknown error');
   }
 };
 
 type DecryptAesKeyPair = (encryptedAesKey: string) => AesKeyPair;
 
-const decryptAesKeyPair: DecryptAesKeyPair = (encryptedAesKey) => {
+const decryptAesKeyPair: DecryptAesKeyPair = encryptedAesKey => {
   const aesKeyPair = JSON.parse(
-    privateKey.decrypt(forge.util.decode64(encryptedAesKey), "RSA-OAEP"),
+    privateKey.decrypt(forge.util.decode64(encryptedAesKey), 'RSA-OAEP'),
   ) as AesKeyPair;
 
   return {
@@ -55,7 +55,7 @@ function decryptData<T>(encryptedData: string, aesKeyPair: AesKeyPair): T {
     forge.util.hexToBytes(ivWithTag.slice(0, 32)),
   );
 
-  const decipher = forge.cipher.createDecipher("AES-GCM", key);
+  const decipher = forge.cipher.createDecipher('AES-GCM', key);
   decipher.start({ iv, tag, tagLength: 128 });
   decipher.update(
     forge.util.createBuffer(forge.util.hexToBytes(encryptedData)),

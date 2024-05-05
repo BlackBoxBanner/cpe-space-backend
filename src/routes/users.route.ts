@@ -1,10 +1,13 @@
-import { usersGetController, searchUserGetController } from '@/controllers/users.controller'
-import { Router } from 'express'
+import {
+  usersGetController,
+  searchUserGetController,
+} from '@/controllers/users.controller';
+import { Router } from 'express';
 
-const routers = Router()
+const routers = Router();
 
-routers.get('/', usersGetController)
-routers.get('/search', searchUserGetController)
+routers.get('/', usersGetController);
+routers.get('/search', searchUserGetController);
 // routers.post('/', usersPostController)
 
-export default routers
+export default routers;
