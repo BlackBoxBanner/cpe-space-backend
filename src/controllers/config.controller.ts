@@ -1,6 +1,6 @@
-import { APIController } from "@/types/responseType";
-import { getCookies } from "@/utils/cookies";
-import { util } from "node-forge";
+import { APIController } from '@/types/responseType';
+import { getCookies } from '@/utils/cookies';
+import { util } from 'node-forge';
 
 export const configGetRsaKeyController: APIController<string> = async (
   req,
@@ -8,10 +8,10 @@ export const configGetRsaKeyController: APIController<string> = async (
   _next,
 ) => {
   const cookies = getCookies(req.headers.cookie);
-  const publicKeyPem = cookies["rsa-public-key"];
+  const publicKeyPem = cookies['rsa-public-key'];
 
-  if (!publicKeyPem || publicKeyPem !== req.app.get("publicKeyPem")) {
-    res.cookie("rsa-public-key", util.encode64(req.app.get("publicKeyPem")), {
+  if (!publicKeyPem || publicKeyPem !== req.app.get('publicKeyPem')) {
+    res.cookie('rsa-public-key', util.encode64(req.app.get('publicKeyPem')), {
       httpOnly: false,
       secure: true,
     });
@@ -19,5 +19,5 @@ export const configGetRsaKeyController: APIController<string> = async (
 
   return res
     .status(200)
-    .json({ data: util.encode64(req.app.get("publicKeyPem")) });
+    .json({ data: util.encode64(req.app.get('publicKeyPem')) });
 };

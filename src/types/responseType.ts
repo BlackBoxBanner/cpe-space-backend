@@ -1,44 +1,48 @@
-import { ZodFormattedError } from "zod";
-import type { Request, Response, NextFunction } from "express";
+import { ZodFormattedError } from 'zod';
+import type { Request, Response, NextFunction } from 'express';
 
 export type APIController<T = Record<string, any>, U = PostBody, J = string> = (
   req: Request<Record<string, any>, any, U>,
   res: Response<ReturnResponse<T, J>>,
-  next: NextFunction
+  next: NextFunction,
 ) => Promise<Response<ReturnResponse<T, J>>>;
 
-export type APIControllerImage<T = Record<string, any>, U = PostBody, J = string> = (
+export type APIControllerImage<
+  T = Record<string, any>,
+  U = PostBody,
+  J = string,
+> = (
   req: Request<Record<string, any>, any, U>,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => Promise<Response>;
 
 export type APIMiddleware<T = never> = (
   req: Request,
   res: Response<ReturnResponse<T>>,
-  next: NextFunction
-) => Promise<Response<ReturnResponse<T>> | void>
+  next: NextFunction,
+) => Promise<Response<ReturnResponse<T>> | void>;
 
 export type ReturnResponse<T, J = string> =
   | {
-    data: T;
-    error?: never;
-  }
+      data: T;
+      error?: never;
+    }
   | {
-    data?: never;
-    error: ErrorResponse<T, J>;
-  };
+      data?: never;
+      error: ErrorResponse<T, J>;
+    };
 
 export type ErrorResponse<T, J> =
   | {
-    zodError: ZodFormattedError<T>;
-    customError?: never;
-  }
+      zodError: ZodFormattedError<T>;
+      customError?: never;
+    }
   | {
-    zodError?: never;
-    customError: J;
-  };
+      zodError?: never;
+      customError: J;
+    };
 
 export type PostBody = {
-  data: string
-}
+  data: string;
+};

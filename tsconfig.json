@@ -1,8 +1,6 @@
 {
   "ts-node": {
-    "require": [
-      "tsconfig-paths/register"
-    ]
+    "require": ["tsconfig-paths/register"]
   },
   "compilerOptions": {
     "target": "es6",
@@ -12,12 +10,8 @@
     "skipLibCheck": true,
     "outDir": "dist",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-    },
+      "@/*": ["./src/*"]
+    }
   },
-  "types": [
-    "@types/jest"
-  ]
+  "types": ["@types/jest"]
 }

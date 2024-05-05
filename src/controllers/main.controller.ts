@@ -1,5 +1,5 @@
-import { APIController, PostBody } from "@/types/responseType";
-import { decrypt } from "@/utils/decryption";
+import { APIController, PostBody } from '@/types/responseType';
+import { decrypt } from '@/utils/decryption';
 
 export const mainGetController: APIController<any> = async (
   req,
@@ -8,13 +8,17 @@ export const mainGetController: APIController<any> = async (
 ) => {
   return res.status(200).json({
     data: {
-      message: "Hello World",
+      message: 'Hello World',
     },
   });
 };
 
-export const mainPostController: APIController<unknown> = async (req, res, _next) => {
-  const body = req.body.data
+export const mainPostController: APIController<unknown> = async (
+  req,
+  res,
+  _next,
+) => {
+  const body = req.body.data;
 
   const decrypted = decrypt(body);
 

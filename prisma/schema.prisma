@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
@@ -36,8 +37,9 @@ model User {
   email     String  @unique
   phone     String? @unique
   program   Program @default(REGULAR)
+  class     String
   password  String
-  image     String?
+  image     String
   touched   Boolean @default(false) // record if user has logged in for the first time
   role      Role    @default(STUDENT)
 
