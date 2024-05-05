@@ -1,10 +1,13 @@
-import { mainGetController, mainPostController } from '@/controllers/main.controller'
-import { mainMiddleware } from '@/middleware/main.middleware'
-import { Router } from 'express'
+import {
+  mainGetController,
+  mainPostController,
+} from '@/controllers/main.controller';
+import { mainMiddleware } from '@/middleware/main.middleware';
+import { Router } from 'express';
 
-const routers = Router()
+const routers = Router();
 
-routers.get('/', mainMiddleware, mainGetController)
-routers.post('/', mainMiddleware, mainPostController)
+routers.get('/', mainMiddleware, mainGetController);
+routers.post('/', mainMiddleware, mainPostController);
 
-export default routers
+export default routers;

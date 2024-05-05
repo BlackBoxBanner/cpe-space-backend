@@ -1,5 +1,5 @@
-import { Client } from "minio";
-import { env } from "@/utils/env";
+import { Client } from 'minio';
+import { env } from '@/utils/env';
 
 const useMinio = () => {
   return new Client({
@@ -8,6 +8,6 @@ const useMinio = () => {
     useSSL: false,
     accessKey: env.MINIO_ACCESS_KEY,
     secretKey: env.MINIO_SECRET_KEY,
-  })
-}
-export { useMinio }
+  });
+};
+export { useMinio };
