@@ -7,12 +7,13 @@ import {
 import { APIController } from "@/types/responseType";
 import {
     CommunitiesFormSchema,
+    CommunitiesType,
     CommunitiesUpdateFormSchema,
 } from "@/types/zodSchema";
 import { customError } from "@/utils/customError";
 import { Communities, CommunitiesStatus } from "@prisma/client";
 
-export const createCommunityController: APIController<Communities> = async (
+export const createCommunityController: APIController<CommunitiesType> = async (
     req,
     res,
     _next
@@ -41,7 +42,7 @@ export const createCommunityController: APIController<Communities> = async (
     }
 };
 
-export const getCommunityController: APIController<Communities[]> = async (
+export const getCommunityController: APIController<CommunitiesType[]> = async (
     req,
     res,
     _next
@@ -65,7 +66,7 @@ export const getCommunityController: APIController<Communities[]> = async (
     }
 };
 
-export const updateCommunityController: APIController<Communities> = async (
+export const updateCommunityController: APIController<CommunitiesType> = async (
     req,
     res,
     _next
@@ -90,7 +91,7 @@ export const updateCommunityController: APIController<Communities> = async (
     }
 };
 
-export const deleteCommunityController: APIController<Communities> = async (
+export const deleteCommunityController: APIController<CommunitiesType> = async (
     req,
     res,
     _next
