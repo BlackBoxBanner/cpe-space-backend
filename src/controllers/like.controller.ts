@@ -1,35 +1,56 @@
 import { APIController } from "@/types/responseType";
-import { CommunitiesFormSchema, PostLikesSchema } from "@/types/zodSchema";
 import { customError } from "@/utils/customError";
 import prisma from "@/utils/prisma";
-import { Communities } from "@prisma/client";
+import { PostLikesSchema } from "@/types/zodSchema";
+import { z } from "zod";
+import { PostLikes } from "@prisma/client";
 
-export const createLikeController: APIController<any> = async (
+type PostLikesType = z.infer<typeof PostLikesSchema>;
+
+export const createLikeController: APIController<PostLikesType> = async (
     req,
     res,
     _next
 ) => {
     try {
-        const body = req.body;
+        const postId = req.params.id;
         const userId = req.cookies["user-id"];
 
         if (!userId) throw new Error("Unautorized user");
 
-        const validateLike = PostLikesSchema.omit({ id: true, userId: true }).safeParse(body);
+        const existsLike = await prisma.postLikes.findFirst({ where: { userId, postId } })
+        if(existsLike) throw new Error("You already liked this post");
 
 
-        if (!validateLike.success)
-            throw new Error(
-                validateLike.error.errors[0].path[0].toString()
-            );
-
-        const like = await prisma.postLikes.create({ data: { ...validateLike.data, userId } })
+        const like = await prisma.postLikes.create({ data: { postId, userId }})
 
         if(!like) throw new Error("Failed to create like");
 
-        const post = await prisma.post.update({data ,where: { id: like.postId } });
+        const post = await prisma.post.update({where: {id: postId}, data: {likes: {increment: 1}}});
 
         return res.status(201).json({ data: like });
+    } catch (error) {
+        return res.status(400).json(customError(error));
+    }
+};
+
+export const removeLikeController: APIController<PostLikesType> = async (
+    req,
+    res,
+    _next
+) => {
+    try {
+        const postId = req.params.id;
+        const userId = req.cookies["user-id"];
+
+        if (!userId) throw new Error("Unautorized user");
+
+        const existsLike = await prisma.postLikes.findFirst({ where: { userId, postId } })
+        if(!existsLike) throw new Error("You did not like this post");
+
+        const deletelike = await prisma.postLikes.delete({ where: { ...existsLike } });
+
+        return res.status(201).json({ data: deletelike });
     } catch (error) {
         return res.status(400).json(customError(error));
     }
