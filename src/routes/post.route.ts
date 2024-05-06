@@ -6,7 +6,7 @@ import {
   getCommentController,
   getPostController,
 } from '@/controllers/post.controller';
-import { createLikeController, removeLikeController } from '@/controllers/like.controller';
+import { createLikeController } from '@/controllers/like.controller';
 import { Router } from 'express';
 
 const routers = Router();
@@ -23,6 +23,6 @@ routers.delete('/:id/comment', deleteCommentController);
 
 // Like of the  Post Route
 routers.post("/:id/like", createLikeController);
-routers.delete("/:id/like", removeLikeController);
+// routers.delete("/:id/like", removeLikeController);
 
 export default routers;
