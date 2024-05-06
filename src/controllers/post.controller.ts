@@ -1,8 +1,8 @@
 import { APIController } from '@/types/responseType';
-import { PostFormSchema } from '@/types/zodSchema';
+import { CommentSchema, PostFormSchema } from '@/types/zodSchema';
 import { customError } from '@/utils/customError';
 import prisma from '@/utils/prisma';
-import { Post } from '@prisma/client';
+import { Post, Comment } from '@prisma/client';
 import { query } from 'express';
 import { z } from 'zod';
 
@@ -53,9 +53,7 @@ export const getPostController: APIController<any> = async (
   _next,
 ) => {
   try {
-    const queries = req.query;
-
-    if (req.query.id === undefined ) {
+    if (req.query.id === undefined) {
       const posts = await prisma.post.findMany();
       return res.status(200).json({ data: posts });
     }
@@ -64,7 +62,7 @@ export const getPostController: APIController<any> = async (
       id: req.query.id ? req.query.id.toString() : undefined,
       // id: req.query.id.toString()
     };
-    
+
     const postview = await prisma.post.findMany({ where: query });
 
     return res.status(201).json({ data: postview });
@@ -84,10 +82,89 @@ export const deletePostController: APIController<any> = async (
     // validate id in param request is required
     if (!id) throw new Error('Id is required');
 
-    const result = await prisma.post.delete({ where: { id } });;  
+    const result = await prisma.post.delete({ where: { id } });
 
     return res.status(201).json({ data: result });
   } catch (error) {
     return res.status(400).json(customError(error));
   }
 };
+
+export const createCommentController: APIController<any> = async (
+  req,
+  res,
+  _next,
+) => {
+  try {
+    const body = req.body;
+    const userId = req.cookies['user-id'];
+    const postId: string = req.params.id;
+
+    if (!postId) throw new Error ('postId is required');
+    if (!userId) throw new Error('Unautorized user');
+
+    const validateComment = CommentSchema.omit({
+      id: true,
+      userId: true,
+      postId: true,
+    }).safeParse(body);
+
+    if (!validateComment.success) {
+      const errorMessage = validateComment.error.errors[0].message;
+      throw new Error(errorMessage);
+    }
+
+    const comment = await prisma.comment.create({
+      data: {
+        userId,
+        postId,
+        content: validateComment.data.content,
+        likes: validateComment.data.likes,
+      },
+    });
+
+    return res.status(201).json({ data: comment });
+  } catch (error) {
+    return res.status(400).json(customError(error));
+  }
+};
+
+export const getCommentController: APIController<any> = async (
+  req,
+  res,
+  _next,
+) => {
+  try {
+
+    const query: Partial<Omit<Comment, 'createdAt'>> = {
+      postId: req.query.id ? req.query.id.toString() : undefined,
+      // postId: req.query.id.toString()
+    };
+
+    const comments = await prisma.comment.findMany({ where: query });
+
+    return res.status(201).json({ data: comments });
+  } catch (error) {
+    return res.status(400).json(customError(error));
+  }
+};
+
+export const deleteCommentController: APIController<any> = async (
+  req,
+  res,
+  _next,
+) => {
+  try {
+    const id: string = req.params.id;
+
+    // validate id in param request is required
+    if (!id) throw new Error('Id is required');
+
+    const result = await prisma.comment.delete({ where: { id } });
+
+    return res.status(201).json({ data: result });
+  } catch (error) {
+    return res.status(400).json(customError(error));
+  }
+};
+
