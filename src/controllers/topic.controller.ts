@@ -52,8 +52,6 @@ export const getTopicController: APIController<TopicType[]> = async (
       },
     });
 
-    console.log(topic);
-
     return res.status(200).json({ data: topic });
   } catch (error) {
     return res.status(400).json(customError(error));
