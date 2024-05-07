@@ -41,11 +41,6 @@ export const getTopicController: APIController<TopicType[]> = async (
   _next,
 ) => {
   try {
-    if (req.query.id === undefined && req.query.name === undefined) {
-      const topics = await prisma.topic.findMany();
-      return res.status(200).json({ data: topics });
-    }
-
     const query: Partial<Topic> = {
       id: req.query.id ? req.query.id.toString() : undefined,
       name: req.query.name ? req.query.name.toString() : undefined,
@@ -63,6 +58,31 @@ export const getTopicController: APIController<TopicType[]> = async (
           {
             name: {
               contains: query.name,
+              mode: 'insensitive',
+            },
+          },
+        ],
+      },
+    });
+
+    return res.status(200).json({ data: topic });
+  } catch (error) {
+    return res.status(400).json(customError(error));
+  }
+};
+
+export const searchTopicController: APIController<TopicType[]> = async (
+  req,
+  res,
+  _next,
+) => {
+  try {
+    const topic = await prisma.topic.findMany({
+      where: {
+        OR: [
+          {
+            name: {
+              contains: req.query.search as string,
               mode: 'insensitive',
             },
           },
