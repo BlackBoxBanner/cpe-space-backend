@@ -49,12 +49,10 @@ export const getCommentController: APIController<any> = async (
   _next,
 ) => {
   try {
-    const query: Partial<Omit<Comment, 'createdAt'>> = {
-      postId: req.query.id ? req.query.id.toString() : undefined,
-      // postId: req.query.id.toString()
-    };
 
-    const comments = await prisma.comment.findMany({ where: query });
+    const id: string = req.params.id;
+
+    const comments = await prisma.comment.findMany({ where: {id}, include: { user: true }});
 
     return res.status(201).json({ data: comments });
   } catch (error) {
