@@ -1,7 +1,6 @@
 import { APIController } from '@/types/responseType';
 import { CommentSchema } from '@/types/zodSchema';
 import { customError } from '@/utils/customError';
-import { Comment } from '@prisma/client';
 import prisma from '@/utils/prisma';
 
 export const createCommentController: APIController<any> = async (

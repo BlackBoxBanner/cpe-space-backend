@@ -1,8 +1,8 @@
 import { APIController } from '@/types/responseType';
-import { CommentSchema, PostFormSchema } from '@/types/zodSchema';
+import { PostFormSchema } from '@/types/zodSchema';
 import { customError } from '@/utils/customError';
 import prisma from '@/utils/prisma';
-import { Post, Comment } from '@prisma/client';
+import { Post } from '@prisma/client';
 import { z } from 'zod';
 
 type TopicType = z.infer<typeof PostFormSchema>;
@@ -99,4 +99,3 @@ export const deletePostController: APIController<any> = async (
     return res.status(400).json(customError(error));
   }
 };
-
