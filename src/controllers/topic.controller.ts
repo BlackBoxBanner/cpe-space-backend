@@ -1,5 +1,5 @@
 import { APIController } from '@/types/responseType';
-import { TopicSchema } from '@/types/zodSchema';
+import { PostSchema, TopicSchema } from '@/types/zodSchema';
 import { customError } from '@/utils/customError';
 import prisma from '@/utils/prisma';
 import { Topic } from '@prisma/client';
@@ -74,6 +74,27 @@ export const searchTopicController: APIController<TopicType[]> = async (
             },
           },
         ],
+      },
+    });
+
+    return res.status(200).json({ data: topic });
+  } catch (error) {
+    return res.status(400).json(customError(error));
+  }
+};
+
+export const getTopicPostController: APIController<TopicType[]> = async (
+  req,
+  res,
+  _next,
+) => {
+  try {
+    const topic = await prisma.topic.findMany({
+      where: {
+        id: req.query.id as string,
+      },
+      include: {
+        posts: true,
       },
     });
 
