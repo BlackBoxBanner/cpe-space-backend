@@ -59,7 +59,6 @@ export const getPostController: APIController<any> = async (
 
     const query: Partial<Omit<Post, 'createdAt'>> = {
       id: req.query.id ? req.query.id.toString() : undefined,
-      // id: req.query.id.toString()
     };
 
     const postview = await prisma.post.findMany({ where: query });
