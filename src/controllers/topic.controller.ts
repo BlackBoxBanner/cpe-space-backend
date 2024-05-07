@@ -1,11 +1,25 @@
 import { APIController } from '@/types/responseType';
-import { PostSchema, TopicSchema } from '@/types/zodSchema';
+import {
+  CommentSchema,
+  CommunitiesSchema,
+  PostSchema,
+  TopicSchema,
+  UserSchema,
+} from '@/types/zodSchema';
 import { customError } from '@/utils/customError';
 import prisma from '@/utils/prisma';
 import { Topic } from '@prisma/client';
 import { z } from 'zod';
 
 type TopicType = z.infer<typeof TopicSchema>;
+
+export type TopicsType = z.infer<typeof TopicSchema> & {
+  user: z.infer<typeof UserSchema>;
+  PostTopic: z.infer<typeof PostSchema>[];
+  comments: z.infer<typeof CommentSchema>[];
+  communities: z.infer<typeof CommunitiesSchema> | null;
+  topics: z.infer<typeof TopicSchema>[];
+};
 
 export const createTopicController: APIController<TopicType> = async (
   req,
@@ -94,7 +108,15 @@ export const getTopicPostController: APIController<TopicType[]> = async (
         id: req.query.id as string,
       },
       include: {
-        posts: true,
+        posts: {
+          include: {
+            user: true,
+            PostTopic: true,
+            comments: true,
+            communities: true,
+            topics: true,
+          },
+        },
       },
     });
 
