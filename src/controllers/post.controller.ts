@@ -3,7 +3,6 @@ import { CommentSchema, PostFormSchema } from '@/types/zodSchema';
 import { customError } from '@/utils/customError';
 import prisma from '@/utils/prisma';
 import { Post, Comment } from '@prisma/client';
-import { query } from 'express';
 import { z } from 'zod';
 
 type TopicType = z.infer<typeof PostFormSchema>;
