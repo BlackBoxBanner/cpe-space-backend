@@ -48,22 +48,11 @@ export const getTopicController: APIController<TopicType[]> = async (
 
     const topic = await prisma.topic.findMany({
       where: {
-        OR: [
-          {
-            id: {
-              contains: query.id,
-              mode: 'insensitive',
-            },
-          },
-          {
-            name: {
-              contains: query.name,
-              mode: 'insensitive',
-            },
-          },
-        ],
+        ...query,
       },
     });
+
+    console.log(topic);
 
     return res.status(200).json({ data: topic });
   } catch (error) {
