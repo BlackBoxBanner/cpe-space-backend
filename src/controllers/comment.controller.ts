@@ -52,6 +52,10 @@ export const getCommentController: APIController<any> = async (
 
     const id: string = req.params.id;
 
+    // validate id in param request is required
+    if (!id) throw new Error('Id is required');
+
+
     const comments = await prisma.comment.findMany({ where: {id}, include: { user: true }});
 
     return res.status(201).json({ data: comments });
