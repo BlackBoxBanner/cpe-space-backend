@@ -8,7 +8,18 @@ export async function createCommunity(data: Communities): Promise<Communities> {
 export async function findCommunity(
   query: Partial<Omit<Communities, 'createdAt'>>,
 ): Promise<Communities[]> {
-  return await prisma.communities.findMany({ where: query });
+  return await prisma.communities.findMany({
+    where: query,
+    include: {
+      owner: {
+        select: {
+          id: true,
+          name: true,
+          image: true,
+        },
+      },
+    },
+  });
 }
 
 export async function findCommunitybyId(

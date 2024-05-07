@@ -15,6 +15,7 @@ import { Communities, CommunitiesStatus } from '@prisma/client';
 import { z } from 'zod';
 import fs from 'fs';
 import { uploadImage } from '@/services/image.service';
+import prisma from '@/utils/prisma';
 
 type CommunitiesType = z.infer<typeof CommunitiesSchema>;
 
@@ -117,6 +118,39 @@ export const deleteCommunityController: APIController<CommunitiesType> = async (
     const result = await deleteCommunity(id);
 
     return res.status(201).json({ data: result });
+  } catch (error) {
+    return res.status(400).json(customError(error));
+  }
+};
+
+export const searchCommunityController: APIController<
+  CommunitiesType[]
+> = async (req, res, _next) => {
+  try {
+    const queries = req.query;
+
+    const communitiesData = await prisma.communities.findMany({
+      where: {
+        OR: [
+          {
+            name: { contains: queries.search?.toString(), mode: 'insensitive' },
+          },
+        ],
+      },
+      include: {
+        owner: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+          },
+        },
+      },
+    });
+
+    console.log(communitiesData);
+
+    return res.status(200).json({ data: communitiesData });
   } catch (error) {
     return res.status(400).json(customError(error));
   }
