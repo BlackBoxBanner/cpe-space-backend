@@ -30,7 +30,7 @@ export const CommunitiesSchema = z.object({
   id: z.string().uuid().refine(validator.isUUID),
   userId: z.string().uuid().refine(validator.isUUID),
   name: z.string(),
-  image: z.string(),
+  image: z.string().optional(),
   status: CommunitiesStatusEnum.default('PUBLIC'),
   createdAt: z.date().default(() => new Date()),
 });

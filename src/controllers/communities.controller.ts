@@ -13,6 +13,8 @@ import {
 import { customError } from '@/utils/customError';
 import { Communities, CommunitiesStatus } from '@prisma/client';
 import { z } from 'zod';
+import fs from 'fs';
+import { uploadImage } from '@/services/image.service';
 
 type CommunitiesType = z.infer<typeof CommunitiesSchema>;
 
@@ -27,10 +29,23 @@ export const createCommunityController: APIController<CommunitiesType> = async (
 
     if (!userId) throw new Error('Unautorized user');
 
-    const validateCommunity = CommunitiesFormSchema.safeParse(body);
+    const base64 = fs.readFileSync(
+      './src/assets/communityDefault.png',
+      'base64',
+    );
+
+    let validateCommunity = CommunitiesFormSchema.safeParse(body.data);
 
     if (!validateCommunity.success)
       throw new Error(validateCommunity.error.errors[0].path[0].toString());
+
+    if (!validateCommunity.data.image) {
+      await uploadImage({
+        base64,
+        name: `community/defaultCommunity.png`,
+      });
+      validateCommunity.data.image = 'community/defaultCommunity.png';
+    }
 
     const communities = await createCommunity({
       userId,
