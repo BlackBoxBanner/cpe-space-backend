@@ -71,3 +71,18 @@ export const getImagePathController: APIController<string[]> = async (
     return res.status(200).json(customError(error));
   }
 };
+
+export const deleteImageController: APIController<string> = async (
+  req,
+  res,
+  _next,
+) => {
+  try {
+    const { name, path } = req.params as { name: string; path: string };
+    const minio = useMinio();
+    const stream = await minio.removeObject(path, name);
+    return res.status(200).json({ data: 'success' });
+  } catch (error) {
+    return res.status(200).json(customError(error));
+  }
+};

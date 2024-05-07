@@ -96,3 +96,42 @@ export const searchUserGetController: APIController<
     return res.status(400).json(customError(error));
   }
 };
+
+export const updateUserController: APIController<
+  Omit<User, 'password'>,
+  { data: Omit<User, 'password'> }
+> = async (req, res, _next) => {
+  try {
+    const { data } = req.body;
+
+    const updateUser = await prisma.user.update({
+      where: { id: data.id },
+      data: {
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        program: data.program,
+        image: data.image,
+        touched: data.touched,
+        role: data.role,
+        class: data.class,
+      },
+      select: {
+        id: true,
+        studentid: true,
+        name: true,
+        email: true,
+        phone: true,
+        program: true,
+        image: true,
+        touched: true,
+        role: true,
+        class: true,
+      },
+    });
+
+    return res.status(200).json({ data: updateUser });
+  } catch (error) {
+    return res.status(400).json(customError(error));
+  }
+};
