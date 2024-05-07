@@ -59,6 +59,17 @@ export const PostSchema = z.object({
   updatedAt: z.date().optional(),
 });
 
+export const PostFormSchema = z.object({
+  id: z.string().uuid().refine(validator.isUUID),
+  content: z.string(),
+  userId: z.string().uuid().refine(validator.isUUID),
+  communitiesId: z.string().refine(validator.isUUID).optional(),
+  likes: z.number().default(0),
+  createdAt: z.date().default(() => new Date()),
+  updatedAt: z.date().optional(),
+  topicId: z.array(z.string().uuid().refine(validator.isUUID)),
+});
+
 export const PostTopicSchema = z.object({
   postId: z.string().uuid().refine(validator.isUUID),
   topicId: z.string().uuid().refine(validator.isUUID),
