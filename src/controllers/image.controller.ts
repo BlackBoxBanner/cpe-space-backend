@@ -1,11 +1,7 @@
+import { UploadBody, uploadImage } from '@/services/image.service';
 import { APIController, APIControllerImage } from '@/types/responseType';
 import { customError } from '@/utils/customError';
 import { useMinio } from '@/utils/minio';
-
-type UploadBody = {
-  name: string;
-  base64: string;
-};
 
 export const uploadController: APIController<string, UploadBody> = async (
   req,
@@ -15,19 +11,7 @@ export const uploadController: APIController<string, UploadBody> = async (
   try {
     const { base64, name } = req.body;
 
-    const nameSplit = name.split('/');
-
-    const minio = useMinio();
-
-    !(await minio.bucketExists(nameSplit[0])) &&
-      (await minio.makeBucket(nameSplit[0]));
-
-    const imageBuffer = Buffer.from(
-      base64.replace(/^data:image\/\w+;base64,/, ''),
-      'base64',
-    );
-
-    await minio.putObject(nameSplit[0], nameSplit[1], imageBuffer);
+    await uploadImage({ base64, name });
 
     return res.status(200).json({ data: name });
   } catch (error) {

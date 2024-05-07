@@ -15,7 +15,9 @@ export const createTopicController: APIController<TopicType> = async (
   try {
     const body = req.body;
 
-    const validateTopic = TopicSchema.omit({ id: true }).safeParse(body);
+    console.log(body);
+
+    const validateTopic = TopicSchema.omit({ id: true }).safeParse(body.data);
 
     if (!validateTopic.success)
       throw new Error(validateTopic.error.errors[0].path[0].toString());
