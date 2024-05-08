@@ -1,24 +1,26 @@
 version: '3.8'
 
 services:
-  # backend:
-  #   container_name: backend
-  #   image: backend
-  #   build:
-  #     context: ./
-  #     dockerfile: backend.dockerfile
-  #   ports:
-  #     - 5100:5100
-  #   environment:
-  #     - PORT=5100
-  #     - DATABASE_URL=postgres://admin:adminpassword@postgres:5432/cpespace
-  #     - MINIO_ENDPOINT=minio
-  #     - MINIO_PORT=9000
-  #     - MINIO_ACCESS_KEY=NvyrAOeXthfbguezGizGxIqLrQbv6ROC
-  #     - MINIO_SECRET_KEY=LEXNjqN0OlW53cHFTsBZfc7q2NGjZiIs
-  #     - API_TOKEN=cNKsNpdNMiJEdbUqJPFnOKfddMNjoSefOaThnegfUCbtPWxiOsEYAXhPhgAUvufd
-  #     - JWT_SECRET=Q9gvhoWTWDczoyMB2FcDPDMqSiHQhijb
-  #     - CLIENT_DOMAIN=http://localhost:3000
+  backend:
+    container_name: backend
+    image: backend
+    build:
+      context: ./
+      dockerfile: backend.dockerfile
+    ports:
+      - 5100:5100
+    environment:
+      - PORT=5100
+      - DATABASE_URL=postgres://admin:adminpassword@postgres:5432/cpespace
+      - MINIO_ENDPOINT=minio
+      - MINIO_PORT=9000
+      - MINIO_ACCESS_KEY=NvyrAOeXthfbguezGizGxIqLrQbv6ROC
+      - MINIO_SECRET_KEY=LEXNjqN0OlW53cHFTsBZfc7q2NGjZiIs
+      - API_TOKEN=cNKsNpdNMiJEdbUqJPFnOKfddMNjoSefOaThnegfUCbtPWxiOsEYAXhPhgAUvufd
+      - JWT_SECRET=Q9gvhoWTWDczoyMB2FcDPDMqSiHQhijb
+      - CLIENT_DOMAIN=http://localhost:3000
+      - MAILERSEND_API_KEY=mlsn.9e862e24cbd232db30b3e215807f1af92de1c8baa635b20c38a4f608e2560ad4
+      - MAILERSEND_MAIL=no-reply@trial-jpzkmgqqe11g059v.mlsender.net
 
   postgres:
     container_name: postgres
