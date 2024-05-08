@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
@@ -10,14 +11,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserStatus {
-  GRADUATED
-  ENROLLED
-}
-
 enum Role {
   ADMIN
   STUDENT
+  TEACHER
+  OFFICER
 }
 
 enum Program {
@@ -27,40 +25,136 @@ enum Program {
   RESFENTIAL_COLLEGE
 }
 
-model User {
-  id        String     @id @default(uuid())
-  studentid String     @unique
-  name      String
-  email     String?    @unique
-  phone     String?    @unique
-  program   Program    @default(REGULAR)
-  password  String
-  image     String?
-  touched   Boolean    @default(false) // record if user has logged in for the first time
-  role      Role       @default(STUDENT)
-  student   UserStatus @default(ENROLLED)
-
-  Blog                      Blog[]
-  ConversationsParticipants ConversationsParticipants[]
-  Message                   Message[]
-  Anouncement               Anouncement[]
-  Event                     Event[]
-  EventPost                 EventPost[]
-  EventParticipants         EventParticipants[]
+enum CommunitiesStatus {
+  PUBLIC
+  PRIVATE
 }
 
-model Blog {
+model User {
   id        String  @id @default(uuid())
-  authorId  String
-  title     String
-  content   String  @db.Text
-  published Boolean @default(false)
+  studentid String  @unique
+  name      String
+  email     String  @unique
+  phone     String? @unique
+  program   Program @default(REGULAR)
+  class     String
+  password  String
+  image     String
+  touched   Boolean @default(false) // record if user has logged in for the first time
+  role      Role    @default(STUDENT)
 
+  ConversationsParticipants ConversationsParticipants[]
+  Message                   Message[]
+  Communities               Communities[]
+  Post                      Post[]
+  Comment                   Comment[]
+  // Replay                    Replay[]
+  PostLikes                 PostLikes[]
+  // CommentLikes              CommentLikes[]
+  // ReplayLikes               ReplayLikes[]
+}
+
+model Communities {
+  id        String            @id @default(uuid())
+  userId    String
+  name      String
+  image     String
+  status    CommunitiesStatus @default(PUBLIC)
+  createdAt DateTime          @default(now())
+
+  owner User   @relation(fields: [userId], references: [id])
+  Post  Post[]
+}
+
+model Topic {
+  id        String      @id @default(uuid())
+  name      String      @unique
+  posts     Post[] // Define a many-to-many relationship with posts
+  PostTopic PostTopic[]
+}
+
+model Post {
+  id            String   @id @default(uuid())
+  content       String   @db.Text
+  userId        String
+  communitiesId String?
+  likes         Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user        User         @relation(fields: [userId], references: [id])
+  communities Communities? @relation(fields: [communitiesId], references: [id])
+  topics      Topic[] // Define a many-to-many relationship with topics
+  comments    Comment[]
+  postLikes   PostLikes[]
+  PostTopic   PostTopic[]
+}
+
+model PostTopic {
+  postId  String
+  topicId String
+
+  post  Post  @relation(fields: [postId], references: [id], onDelete: Cascade)
+  topic Topic @relation(fields: [topicId], references: [id])
+
+  @@id([postId, topicId])
+}
+
+model PostLikes {
+  id     String @id @default(uuid())
+  postId String
+  userId String
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  postId    String
+  userId    String
+  content   String   @db.Text
+  likes     Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  author User @relation(fields: [authorId], references: [id])
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Replay       Replay[]
+  // CommentLikes CommentLikes[]
 }
+
+// model CommentLikes {
+//   id        String @id @default(uuid())
+//   commentId String
+//   userId    String
+
+//   post Comment @relation(fields: [commentId], references: [id])
+//   user User    @relation(fields: [userId], references: [id])
+// }
+
+// model Replay {
+//   id        String   @id @default(uuid())
+//   commentId String
+//   userId    String
+//   content   String   @db.Text
+//   likes     Int      @default(0)
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   comment     Comment       @relation(fields: [commentId], references: [id])
+//   user        User          @relation(fields: [userId], references: [id])
+//   ReplayLikes ReplayLikes[]
+// }
+
+// model ReplayLikes {
+//   id       String @id @default(uuid())
+//   replayId String
+//   userId   String
+
+//   post Replay @relation(fields: [replayId], references: [id])
+//   user User   @relation(fields: [userId], references: [id])
+// }
 
 model Conversations {
   id        String   @id @default(uuid())
@@ -94,59 +188,4 @@ model Message {
 
   conversation Conversations @relation(fields: [conversationId], references: [id])
   author       User          @relation(fields: [authorId], references: [id])
-}
-
-model Anouncement {
-  id        String  @id @default(uuid())
-  authorId  String
-  title     String
-  content   String  @db.Text
-  published Boolean @default(false)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  author User @relation(fields: [authorId], references: [id])
-}
-
-model EventPost {
-  id        String  @id @default(uuid())
-  authorId  String
-  title     String
-  content   String  @db.Text
-  published Boolean @default(false)
-  eventId   String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  author User  @relation(fields: [authorId], references: [id])
-  event  Event @relation(fields: [eventId], references: [id])
-}
-
-model Event {
-  id        String   @id @default(uuid())
-  authorId  String
-  title     String
-  content   String   @db.Text
-  eventDate DateTime
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  EventPost         EventPost[]
-  EventParticipants EventParticipants[]
-
-  author User @relation(fields: [authorId], references: [id])
-}
-
-model EventParticipants {
-  id      String @id @default(uuid())
-  eventId String
-  userId  String
-
-  createdAt DateTime @default(now())
-
-  event Event @relation(fields: [eventId], references: [id])
-  user  User  @relation(fields: [userId], references: [id])
 }

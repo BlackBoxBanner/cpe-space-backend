@@ -1,132 +1,114 @@
-import zod from 'zod';
+import { z } from 'zod';
+import validator from 'validator';
 
-const invalid_type_error = 'Invalid type provided for this field';
-const required_error = 'This field cannot be blank';
-const invalid_value_length_error = "Invalid value length"
+const RoleEnum = z.enum(['ADMIN', 'STUDENT', 'TEACHER', 'OFFICER']);
 
-export const UserSchema = zod.object({
-  id: zod.string({ invalid_type_error, required_error }).min(1, invalid_value_length_error),
-  studentid: zod.string({ invalid_type_error, required_error }).min(1, invalid_value_length_error),
-  name: zod.string({ invalid_type_error, required_error }),
-  email: zod.string().email().optional(),
-  phone: zod.string().optional(),
-  program: zod.enum(['REGULAR', 'INTERNATIONAL', 'HEALTH_DATA_SCIENCE', 'RESFENTIAL_COLLEGE'], { invalid_type_error, required_error }).default('REGULAR'),
-  password: zod.string({ invalid_type_error, required_error }).min(1, invalid_value_length_error),
-  image: zod.string().optional(),
-  touched: zod.boolean({ invalid_type_error, required_error }),
-  role: zod.enum(['ADMIN', 'STUDENT'], { invalid_type_error, required_error }).default('STUDENT'),
-  student: zod.enum(['GRADUATED', 'ENROLLED'], { invalid_type_error, required_error }).default('ENROLLED'),
-})
+const CommunitiesStatusEnum = z.enum(['PUBLIC', 'PRIVATE']);
 
-export const UserFormSchema = UserSchema.omit({ id: true, touched: true, role: true, student: true, })
+const ProgramEnum = z.enum([
+  'REGULAR',
+  'INTERNATIONAL',
+  'HEALTH_DATA_SCIENCE',
+  'RESFENTIAL_COLLEGE',
+]);
 
-export type UserType = zod.infer<typeof UserSchema>
+export const UserSchema = z.object({
+  id: z.string().uuid().refine(validator.isUUID),
+  studentid: z.string(),
+  name: z.string(),
+  class: z.string(),
+  email: z.string().email().refine(validator.isEmail),
+  phone: z.string().optional(),
+  program: ProgramEnum.default('REGULAR'),
+  password: z.string(),
+  image: z.string(),
+  touched: z.boolean().default(false),
+  role: RoleEnum.default('STUDENT'),
+});
 
-export type UserFormType = zod.infer<typeof UserFormSchema>
+export const CommunitiesSchema = z.object({
+  id: z.string().uuid().refine(validator.isUUID),
+  userId: z.string().uuid().refine(validator.isUUID),
+  name: z.string(),
+  image: z.string().optional(),
+  status: CommunitiesStatusEnum.default('PUBLIC'),
+  createdAt: z.date().default(() => new Date()),
+});
 
-export const BlogSchema = zod.object({
-  id: zod.string(),
-  authorId: zod.string(),
-  title: zod.string(),
-  content: zod.string(),
-  published: zod.boolean(),
-  createdAt: zod.string(),
-  updatedAt: zod.string(),
-})
+export const CommunitiesFormSchema = CommunitiesSchema.omit({
+  id: true,
+  userId: true,
+  createdAt: true,
+});
+export const CommunitiesUpdateFormSchema = CommunitiesSchema.omit({
+  createdAt: true,
+});
 
-export const BlogFormSchema = BlogSchema.omit({ id: true, createdAt: true, updatedAt: true })
+export const TopicSchema = z.object({
+  id: z.string().uuid().refine(validator.isUUID),
+  name: z.string(),
+});
 
-export type BlogType = zod.infer<typeof BlogSchema>
+export const PostSchema = z.object({
+  id: z.string().uuid().refine(validator.isUUID),
+  content: z.string(),
+  userId: z.string().uuid().refine(validator.isUUID),
+  communitiesId: z.string().refine(validator.isUUID).optional(),
+  likes: z.number().default(0),
+  createdAt: z.date().default(() => new Date()),
+  updatedAt: z.date().optional(),
+});
 
-export type BlogFormType = zod.infer<typeof BlogFormSchema>
+export const PostFormSchema = z.object({
+  id: z.string().uuid().refine(validator.isUUID),
+  content: z.string(),
+  userId: z.string().uuid().refine(validator.isUUID),
+  communitiesId: z.string().refine(validator.isUUID).optional(),
+  likes: z.number().default(0),
+  createdAt: z.date().default(() => new Date()),
+  updatedAt: z.date().optional(),
+  topicId: z.array(z.string().uuid().refine(validator.isUUID)),
+});
 
-export type ConversationsType = {
-  id: string
-  createdAt: string
-  updatedAt: string
-}
+export const PostTopicSchema = z.object({
+  postId: z.string().uuid().refine(validator.isUUID),
+  topicId: z.string().uuid().refine(validator.isUUID),
+});
 
-export type ConversationsParticipantsSchema = {
-  id: string
-  conversationId: string
-  userId: string
-  createdAt: string
-}
+export const PostLikesSchema = z.object({
+  id: z.string().uuid().refine(validator.isUUID),
+  postId: z.string().uuid().refine(validator.isUUID),
+  userId: z.string().uuid().refine(validator.isUUID),
+});
 
-export const MessageSchema = zod.object({
-  id: zod.string(),
-  conversationId: zod.string(),
-  authorId: zod.string(),
-  content: zod.string(),
-  read: zod.boolean(),
-  createdAt: zod.string(),
-  updatedAt: zod.string(),
-})
+export const CommentSchema = z.object({
+  id: z.string().uuid().refine(validator.isUUID),
+  postId: z.string().uuid().refine(validator.isUUID),
+  userId: z.string().uuid().refine(validator.isUUID),
+  content: z.string(),
+  likes: z.number().default(0),
+  createdAt: z.date().default(() => new Date()),
+  updatedAt: z.date().optional(),
+});
 
-export const MessageFormSchema = MessageSchema.omit({ id: true, createdAt: true, updatedAt: true })
+export const CommentLikesSchema = z.object({
+  id: z.string().uuid().refine(validator.isUUID),
+  commentId: z.string().uuid().refine(validator.isUUID),
+  userId: z.string().uuid().refine(validator.isUUID),
+});
 
-export type MessageType = zod.infer<typeof MessageSchema>
+export const ReplaySchema = z.object({
+  id: z.string().uuid().refine(validator.isUUID),
+  commentId: z.string().uuid().refine(validator.isUUID),
+  userId: z.string().uuid().refine(validator.isUUID),
+  content: z.string(),
+  likes: z.number().default(0),
+  createdAt: z.date().default(() => new Date()),
+  updatedAt: z.date().optional(),
+});
 
-export type MessageFormType = zod.infer<typeof MessageFormSchema>
-
-export const AnouncementSchema = zod.object({
-  id: zod.string(),
-  authorId: zod.string(),
-  title: zod.string(),
-  content: zod.string(),
-  published: zod.boolean(),
-  createdAt: zod.string(),
-  updatedAt: zod.string(),
-})
-
-export const AnouncementFormSchema = AnouncementSchema.omit({ id: true, createdAt: true, updatedAt: true })
-
-export type AnouncementType = zod.infer<typeof AnouncementSchema>
-
-export type AnouncementFormType = zod.infer<typeof AnouncementFormSchema>
-
-export const EventPostSchema = zod.object({
-  id: zod.string(),
-  authorId: zod.string(),
-  title: zod.string(),
-  content: zod.string(),
-  published: zod.boolean(),
-  eventId: zod.string(),
-  createdAt: zod.string(),
-  updatedAt: zod.string(),
-})
-
-export const EventPostFormSchema = EventPostSchema.omit({ id: true, createdAt: true, updatedAt: true })
-
-export type EventPostType = zod.infer<typeof EventPostSchema>
-
-export type EventPostFormType = zod.infer<typeof EventPostFormSchema>
-
-export const EventSchema = zod.object({
-  id: zod.string(),
-  authorId: zod.string(),
-  title: zod.string(),
-  content: zod.string(),
-  eventDate: zod.string(),
-  createdAt: zod.string(),
-  updatedAt: zod.string(),
-})
-
-export const EventFormSchema = EventSchema.omit({ id: true, createdAt: true, updatedAt: true })
-
-export type EventType = zod.infer<typeof EventSchema>
-
-export type EventFormType = zod.infer<typeof EventFormSchema>
-
-export const EventParticipantsSchema = zod.object({
-  id: zod.string(),
-  eventId: zod.string(),
-  userId: zod.string(),
-  createdAt: zod.string(),
-})
-
-export type EventParticipantsType = zod.infer<typeof EventParticipantsSchema>
-
-export const EventParticipantsFormSchema = EventParticipantsSchema.omit({ id: true, createdAt: true })
-
-export type EventParticipantsFormType = zod.infer<typeof EventParticipantsFormSchema>
+export const ReplayLikesSchema = z.object({
+  id: z.string().uuid().refine(validator.isUUID),
+  replayId: z.string().uuid().refine(validator.isUUID),
+  userId: z.string().uuid().refine(validator.isUUID),
+});
