@@ -6,9 +6,14 @@ import {
 } from '@/services/communities.service';
 import { APIController } from '@/types/responseType';
 import {
+  CommentSchema,
   CommunitiesFormSchema,
   CommunitiesSchema,
   CommunitiesUpdateFormSchema,
+  PostLikesSchema,
+  PostSchema,
+  TopicSchema,
+  UserSchema,
 } from '@/types/zodSchema';
 import { customError } from '@/utils/customError';
 import { Communities, CommunitiesStatus } from '@prisma/client';
@@ -151,6 +156,51 @@ export const searchCommunityController: APIController<
     console.log(communitiesData);
 
     return res.status(200).json({ data: communitiesData });
+  } catch (error) {
+    return res.status(400).json(customError(error));
+  }
+};
+
+export type CommunitiesPostType = z.infer<typeof PostSchema> & {
+  user: z.infer<typeof UserSchema>;
+  PostTopic: z.infer<typeof PostSchema>[];
+  comments: (z.infer<typeof CommentSchema> & {
+    user: z.infer<typeof UserSchema>;
+  })[];
+  communities: z.infer<typeof CommunitiesSchema> | null;
+  topics: z.infer<typeof TopicSchema>[];
+  postLikes: z.infer<typeof PostLikesSchema>[];
+};
+
+export const getCommunityPostController: APIController<any> = async (
+  req,
+  res,
+  _next,
+) => {
+  try {
+    const topic = await prisma.post.findMany({
+      where: {
+        communities: {
+          id: req.query.id as string,
+        },
+      },
+      include: {
+        user: true,
+        PostTopic: true,
+        comments: {
+          include: {
+            user: true,
+          },
+        },
+        communities: true,
+        topics: true,
+        postLikes: true,
+      },
+    });
+
+    console.log(topic);
+
+    return res.status(200).json({ data: topic });
   } catch (error) {
     return res.status(400).json(customError(error));
   }
