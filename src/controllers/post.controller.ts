@@ -21,7 +21,7 @@ export const createPostController: APIController<any> = async (
     const validatePost = PostFormSchema.omit({
       id: true,
       userId: true,
-    }).safeParse(body);
+    }).safeParse(body.data);
 
     if (!validatePost.success) {
       const errorMessage = validatePost.error.errors[0].message;
@@ -34,6 +34,9 @@ export const createPostController: APIController<any> = async (
         content: validatePost.data.content,
         communitiesId: validatePost.data.communitiesId,
         likes: validatePost.data.likes,
+        topics: {
+          connect: validatePost.data.topicId.map(topic => ({ id: topic })),
+        },
         PostTopic: {
           create: validatePost.data.topicId.map(topic => ({ topicId: topic })),
         },
@@ -69,9 +72,14 @@ export const getPostController: APIController<any> = async (
       include: {
         user: true,
         PostTopic: true,
-        comments: true,
+        comments: {
+          include: {
+            user: true,
+          },
+        },
         communities: true,
         topics: true,
+        postLikes: true,
       },
     });
 

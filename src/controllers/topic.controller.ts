@@ -2,6 +2,7 @@ import { APIController } from '@/types/responseType';
 import {
   CommentSchema,
   CommunitiesSchema,
+  PostLikesSchema,
   PostSchema,
   TopicSchema,
   UserSchema,
@@ -16,9 +17,12 @@ type TopicType = z.infer<typeof TopicSchema>;
 export type TopicsType = z.infer<typeof TopicSchema> & {
   user: z.infer<typeof UserSchema>;
   PostTopic: z.infer<typeof PostSchema>[];
-  comments: z.infer<typeof CommentSchema>[];
+  comments: (z.infer<typeof CommentSchema> & {
+    user: z.infer<typeof UserSchema>;
+  })[];
   communities: z.infer<typeof CommunitiesSchema> | null;
   topics: z.infer<typeof TopicSchema>[];
+  postLikes: z.infer<typeof PostLikesSchema>[];
 };
 
 export const createTopicController: APIController<TopicType> = async (
@@ -112,9 +116,14 @@ export const getTopicPostController: APIController<TopicType[]> = async (
           include: {
             user: true,
             PostTopic: true,
-            comments: true,
+            comments: {
+              include: {
+                user: true,
+              },
+            },
             communities: true,
             topics: true,
+            postLikes: true,
           },
         },
       },
